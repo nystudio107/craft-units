@@ -4,9 +4,13 @@ A plugin for handling physical quantities and the units of measure in which they
 
 ![Screenshot](resources/img/plugin-logo.png)
 
+## This plugin isn't done yet, don't use it
+
+No, really.
+
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.0.0 or later.
 
 ## Installation
 
@@ -18,9 +22,11 @@ To install the plugin, follow these instructions.
 
 2. Then tell Composer to load the plugin:
 
-        composer require nystudio107/units
+        composer require nystudio107/craft-units
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Units.
+
+You can also install SEOmatic via the **Plugin Store** in the Craft AdminCP.
 
 ## Units Overview
 
