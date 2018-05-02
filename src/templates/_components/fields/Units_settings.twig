@@ -1,0 +1,48 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{# @var field \nystudio107\units\fields\Units #}
+{#
+/**
+ * Units plugin for Craft CMS
+ *
+ * Units Field Settings
+ *
+ * @author    nystudio107
+ * @copyright Copyright (c) 2018 nystudio107
+ * @link      https://nystudio107.com/
+ * @package   Units
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\units\\UnitsAsset") %}
+
+{{ forms.selectField({
+    label: "Measure Type"|t("units"),
+    instructions: "blah."|t("units"),
+    id: "defaultUnitsClass",
+    name: "defaultUnitsClass",
+    options: unitsClassMap,
+    value: field.defaultUnitsClass,
+    errors: field.getErrors("defaultUnitsClass"),
+}) }}
+
+{{ forms.textField({
+    label: "Default Value"|t("units"),
+    instructions: "blah."|t("units"),
+    id: 'defaultValue',
+    name: 'defaultValue',
+    value: field.defaultValue,
+    errors: field.getErrors("defaultValue"),
+}) }}
+
+{{ forms.selectField({
+    label: "Default Units"|t("units"),
+    instructions: "blah."|t("units"),
+    id: "defaultUnits",
+    name: "defaultUnits",
+    options: availableUnits,
+    value: field.defaultUnits,
+    errors: field.getErrors("defaultUnits"),
+}) }}

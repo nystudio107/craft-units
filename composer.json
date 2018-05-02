@@ -1,0 +1,45 @@
+{
+    "name": "nystudio107/craft-units",
+    "description": "A plugin for handling physical quantities and the units of measure in which they're represented.",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "measurement",
+        "units"
+    ],
+    "support": {
+        "docs": "https://github.com/nystudio107/craft-units/blob/master/README.md",
+        "issues": "https://github.com/nystudio107/craft-units/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "nystudio107",
+            "homepage": "https://nystudio107.com/"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0",
+        "php-units-of-measure/php-units-of-measure": "^2.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "nystudio107\\units\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Units",
+        "handle": "units",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft-units/master/CHANGELOG.md",
+        "components": {
+            "units": "nystudio107\\units\\services\\Units"
+        },
+        "class": "nystudio107\\units\\Units"
+    }
+}
