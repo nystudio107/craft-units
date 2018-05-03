@@ -23,6 +23,12 @@ use yii\base\InvalidArgumentException;
  * @author    nystudio107
  * @package   Units
  * @since     1.0.0
+ *
+ * @method float toUnit($toUnit)
+ * @method float toNativeUnit()
+ * @method float add()
+ * @method float subtract()
+ * @method bool isEquivalentQuantity()
  */
 class UnitsData extends Model
 {

@@ -14,7 +14,21 @@ use nystudio107\units\helpers\ClassHelper;
 
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantityInterface;
+use PhpUnitsOfMeasure\PhysicalQuantity\Acceleration;
+use PhpUnitsOfMeasure\PhysicalQuantity\Angle;
+use PhpUnitsOfMeasure\PhysicalQuantity\Area;
+use PhpUnitsOfMeasure\PhysicalQuantity\ElectricCurrent;
+use PhpUnitsOfMeasure\PhysicalQuantity\Energy;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
+use PhpUnitsOfMeasure\PhysicalQuantity\LuminousIntensity;
+use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
+use PhpUnitsOfMeasure\PhysicalQuantity\Pressure;
+use PhpUnitsOfMeasure\PhysicalQuantity\Quantity;
+use PhpUnitsOfMeasure\PhysicalQuantity\SolidAngle;
+use PhpUnitsOfMeasure\PhysicalQuantity\Temperature;
+use PhpUnitsOfMeasure\PhysicalQuantity\Time;
+use PhpUnitsOfMeasure\PhysicalQuantity\Velocity;
+use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 
 use yii\base\InvalidArgumentException;
 
@@ -23,21 +37,21 @@ use yii\base\InvalidArgumentException;
  * @package   Units
  * @since     1.0.0
  *
- * @method acceleration
- * @method angle
- * @method area
- * @method electricCurrent
- * @method energy
- * @method length
- * @method luminousIntensity
- * @method mass
- * @method pressure
- * @method quantity
- * @method solidAngle
- * @method temperature
- * @method time
- * @method velocity
- * @method volume
+ * @method Acceleration acceleration($value, string $units)
+ * @method Angle angle($value, string $units)
+ * @method Area area($value, string $units)
+ * @method ElectricCurrent electricCurrent($value, string $units)
+ * @method Energy energy($value, string $units)
+ * @method Length length($value, string $units)
+ * @method LuminousIntensity luminousIntensity($value, string $units)
+ * @method Mass mass($value, string $units)
+ * @method Pressure pressure($value, string $units)
+ * @method Quantity quantity($value, string $units)
+ * @method SolidAngle solidAngle($value, string $units)
+ * @method Temperature temperature($value, string $units)
+ * @method Time time($value, string $units)
+ * @method Velocity velocity($value, string $units)
+ * @method Volume volume($value, string $units)
  */
 class UnitsVariable
 {
