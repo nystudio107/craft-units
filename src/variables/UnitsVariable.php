@@ -12,6 +12,7 @@ namespace nystudio107\units\variables;
 
 use nystudio107\units\helpers\ClassHelper;
 
+use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
@@ -60,6 +61,8 @@ class UnitsVariable
      *
      * @return PhysicalQuantityInterface
      * @throws InvalidArgumentException
+     * @throws \PhpUnitsOfMeasure\Exception\NonNumericValue
+     * @throws \PhpUnitsOfMeasure\Exception\NonStringUnitName
      */
     public function __call($method, $args): PhysicalQuantityInterface
     {
@@ -68,6 +71,7 @@ class UnitsVariable
         }
         $unitsClassKey = ucfirst($method);
         if (isset($this->unitsClassMap[$unitsClassKey])) {
+            /** @var AbstractPhysicalQuantity $unitsClassName */
             $unitsClassName = $this->unitsClassMap[$unitsClassKey];
             list($value, $units) = $args;
 

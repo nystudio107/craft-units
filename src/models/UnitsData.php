@@ -14,7 +14,10 @@ use nystudio107\units\Units;
 
 use craft\base\Model;
 
+use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
+
+use yii\base\InvalidArgumentException;
 
 /**
  * @author    nystudio107
@@ -41,8 +44,27 @@ class UnitsData extends Model
      */
     public $units;
 
+    // Private Properties
+    // =========================================================================
+
+    /**
+     * @var AbstractPhysicalQuantity
+     */
+    private $unitsInstance;
+
     // Public Methods
     // =========================================================================
+
+    public function __call($method, $args)
+    {
+        $unitsInstance = $this->unitsInstance;
+        if (method_exists($unitsInstance, $method)) {
+            list($value, $units) = $args;
+            return $this->unitsInstance->$method($value, $units);
+        }
+
+        throw new InvalidArgumentException("Method {$method} doesn't exist");
+    }
 
     /**
      * @inheritdoc
@@ -52,9 +74,11 @@ class UnitsData extends Model
         parent::init();
         /** @var Settings $settings */
         $settings = Units::$plugin->getSettings();
-        $this->unitsClass = $settings->defaultUnitsClass;
-        $this->value = $settings->defaultValue;
-        $this->units = $settings->defaultUnits;
+        $this->unitsClass = $this->unitsClass ?? $settings->defaultUnitsClass;
+        $this->value = $this->value ?? $settings->defaultValue;
+        $this->units = $this->units ?? $settings->defaultUnits;
+
+        $this->unitsInstance = new $this->unitsClass($this->value, $this->units);
     }
 
     /**

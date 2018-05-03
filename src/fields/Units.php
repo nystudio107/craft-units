@@ -23,10 +23,11 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\helpers\Json;
 
-use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
+use yii\base\Arrayable;
+use yii\base\InvalidConfigException;
+
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 use PhpUnitsOfMeasure\UnitOfMeasure;
-use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
@@ -111,10 +112,9 @@ class Units extends Field
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        if ($value instanceof AbstractPhysicalQuantity) {
+        if ($value instanceof UnitsData) {
             return $value;
         }
-
         // Default config
         $config = [
             'unitsClass' => $this->defaultUnitsClass,
@@ -129,7 +129,7 @@ class Units extends Field
             if (\is_array($value)) {
                 $config = $value;
             }
-            if (\is_object($value) && $value instanceof UnitsData) {
+            if (\is_object($value) && $value instanceof Arrayable) {
                 $config = $value->toArray();
             }
         }
@@ -143,25 +143,7 @@ class Units extends Field
             );
         }
 
-        return new $unitsData->unitsClass($unitsData->value, $unitsData->units);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function serializeValue($value, ElementInterface $element = null)
-    {
-        if ($value instanceof AbstractPhysicalQuantity) {
-            list($originalValue, $originalUnit) = explode(' ', (string)$value);
-            $config = [
-                'unitsClass' => \get_class($value),
-                'value' => $originalValue,
-                'units' => $originalUnit,
-            ];
-            $value = new UnitsData($config);
-        }
-
-        return parent::serializeValue($value, $element);
+        return new $unitsData;
     }
 
     /**
@@ -215,12 +197,6 @@ class Units extends Field
         $jsonVars = Json::encode($jsonVars);
         Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(".$jsonVars.");");
 
-        if ($value instanceof AbstractPhysicalQuantity) {
-            $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
-            list($originalValue, $originalUnit) = explode(' ', (string)$value);
-            $availableUnits = $value::getUnitDefinitions();
-        }
-
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
             'units/_components/fields/Units_input',
@@ -231,9 +207,7 @@ class Units extends Field
                 'namespacedId' => $namespacedId,
                 'unitsClassMap' => $unitsClassMap,
                 'availableUnits' => $availableUnits,
-                'unitsClass' => \get_class($value),
-                'value' => $originalValue,
-                'units' => $originalUnit,
+                'value' => $value,
             ]
         );
     }
