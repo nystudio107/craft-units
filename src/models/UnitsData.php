@@ -14,10 +14,10 @@ use nystudio107\units\Units;
 
 use craft\base\Model;
 
+use yii\base\InvalidArgumentException;
+
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
-
-use yii\base\InvalidArgumentException;
 
 /**
  * @author    nystudio107
