@@ -65,8 +65,7 @@ class UnitsData extends Model
     {
         $unitsInstance = $this->unitsInstance;
         if (method_exists($unitsInstance, $method)) {
-            list($value, $units) = $args;
-            return $this->unitsInstance->$method($value, $units);
+            return \call_user_func_array([$unitsInstance, $method], $args);
         }
 
         throw new InvalidArgumentException("Method {$method} doesn't exist");
