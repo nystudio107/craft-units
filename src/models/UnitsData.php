@@ -83,7 +83,9 @@ class UnitsData extends Model
         $this->value = $this->value ?? $settings->defaultValue;
         $this->units = $this->units ?? $settings->defaultUnits;
 
-        $this->unitsInstance = new $this->unitsClass($this->value, $this->units);
+        if ($this->unitsClass !== null) {
+            $this->unitsInstance = new $this->unitsClass($this->value, $this->units);
+        }
     }
 
     /**
@@ -91,10 +93,13 @@ class UnitsData extends Model
      */
     public function rules(): array
     {
-        return [
+        $rules = parent::rules();
+        $rules = array_merge($rules, [
             ['unitsClass', 'string'],
             ['value', 'number'],
             ['units', 'string'],
-        ];
+        ]);
+
+        return $rules;
     }
 }
