@@ -35,4 +35,16 @@ return [
 
     // Whether the units the field can be changed
     'defaultChangeableUnits' => true,
+
+    // The default minimum allowed number
+    'defaultMin' => 0,
+
+    // The default maximum allowed number
+    'defaultMax' => null,
+
+    // The default number of digits allowed after the decimal point
+    'defaultDecimals' => 3,
+
+    // The default size of the field
+    'defaultSize' => 6,
 ];
