@@ -22,10 +22,12 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\helpers\Json;
+use craft\i18n\Locale;
 
 use yii\base\Arrayable;
 use yii\base\InvalidConfigException;
 
+use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 use PhpUnitsOfMeasure\UnitOfMeasure;
 
@@ -69,6 +71,26 @@ class Units extends Field
      * @var bool Whether the units the field can be changed
      */
     public $changeableUnits = true;
+
+    /**
+     * @var int|float The minimum allowed number
+     */
+    public $min = 0;
+
+    /**
+     * @var int|float|null The maximum allowed number
+     */
+    public $max;
+
+    /**
+     * @var int The number of digits allowed after the decimal point
+     */
+    public $decimals = 0;
+
+    /**
+     * @var int|null The size of the field
+     */
+    public $size;
 
     // Public Methods
     // =========================================================================
@@ -151,15 +173,9 @@ class Units extends Field
      */
     public function getSettingsHtml()
     {
-        $availableUnits = [];
-        $units = Length::getUnitDefinitions();
-        /** @var UnitOfMeasure $unit */
-        foreach ($units as $unit) {
-            $name = $unit->getName();
-            $aliases = $unit->getAliases();
-            $availableUnits[$name] = $aliases[0] ?? $name;
-        }
+        $availableUnits = $this->availableUnits(Length::class);
         $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
+
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
             'units/_components/fields/Units_settings',
@@ -176,39 +192,74 @@ class Units extends Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        // Register our asset bundle
-        try {
-            Craft::$app->getView()->registerAssetBundle(UnitsFieldAsset::class);
-        } catch (InvalidConfigException $e) {
-            Craft::error($e->getMessage(), __METHOD__);
+        if ($value instanceof UnitsData) {
+            // Register our asset bundle
+            try {
+                Craft::$app->getView()->registerAssetBundle(UnitsFieldAsset::class);
+            } catch (InvalidConfigException $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            }
+            $availableUnits = $this->availableUnits($value->unitsClass);
+            $model = $value;
+            $value = $model->value;
+            $decimals = $this->decimals;
+            // If decimals is 0 (or null, empty for whatever reason), don't run this
+            if ($decimals) {
+                $decimalSeparator = Craft::$app->getLocale()->getNumberSymbol(Locale::SYMBOL_DECIMAL_SEPARATOR);
+                $value = number_format($value, $decimals, $decimalSeparator, '');
+            }
+            // Get our id and namespace
+            $id = Craft::$app->getView()->formatInputId($this->handle);
+            $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+
+            // Variables to pass down to our field JavaScript to let it namespace properly
+            $jsonVars = [
+                'id' => $id,
+                'name' => $this->handle,
+                'namespace' => $namespacedId,
+                'prefix' => Craft::$app->getView()->namespaceInputId(''),
+            ];
+            $jsonVars = Json::encode($jsonVars);
+            Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(".$jsonVars.");");
+
+            // Render the input template
+            return Craft::$app->getView()->renderTemplate(
+                'units/_components/fields/Units_input',
+                [
+                    'name' => $this->handle,
+                    'field' => $this,
+                    'id' => $id,
+                    'namespacedId' => $namespacedId,
+                    'availableUnits' => $availableUnits,
+                    'value' => $value,
+                    'model' => $model,
+                ]
+            );
+        }
+    }
+
+    /**
+     * Return the available units for a given AbstractPhysicalQuantity
+     *
+     * @param string $unitsClass
+     *
+     * @return array
+     */
+    protected function availableUnits(string $unitsClass): array
+    {
+        $availableUnits = [];
+        if (is_subclass_of($unitsClass, AbstractPhysicalQuantity::class)) {
+            /** @var array $units */
+            /** @var AbstractPhysicalQuantity $unitsClass */
+            $units = $unitsClass::getUnitDefinitions();
+            /** @var UnitOfMeasure $unit */
+            foreach ($units as $unit) {
+                $name = $unit->getName();
+                $aliases = $unit->getAliases();
+                $availableUnits[$name] = $aliases[0] ?? $name;
+            }
         }
 
-        // Get our id and namespace
-        $id = Craft::$app->getView()->formatInputId($this->handle);
-        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
-
-        // Variables to pass down to our field JavaScript to let it namespace properly
-        $jsonVars = [
-            'id' => $id,
-            'name' => $this->handle,
-            'namespace' => $namespacedId,
-            'prefix' => Craft::$app->getView()->namespaceInputId(''),
-        ];
-        $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(".$jsonVars.");");
-
-        // Render the input template
-        return Craft::$app->getView()->renderTemplate(
-            'units/_components/fields/Units_input',
-            [
-                'name' => $this->handle,
-                'field' => $this,
-                'id' => $id,
-                'namespacedId' => $namespacedId,
-                'unitsClassMap' => $unitsClassMap,
-                'availableUnits' => $availableUnits,
-                'value' => $value,
-            ]
-        );
+        return $availableUnits;
     }
 }

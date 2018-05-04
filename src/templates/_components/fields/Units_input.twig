@@ -1,4 +1,5 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
+{# @var model \nystudio107\units\models\UnitsData #}
 {#
 /**
  * Units plugin for Craft CMS 3.x
@@ -16,9 +17,16 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.textField({
-        label: 'Some Field',
-        instructions: 'Enter some text here.',
-        id: name,
-        name: name,
-        value: value})
-}}
+    id: id ~ "value",
+    name: name ~ "[value]",
+    value: value,
+    errors: model.getErrors("value"),
+}) }}
+
+{{ forms.selectField({
+    id: id ~ "units",
+    name: name ~ "[units]",
+    options: availableUnits,
+    value: model.units,
+    errors: model.getErrors("units"),
+}) }}

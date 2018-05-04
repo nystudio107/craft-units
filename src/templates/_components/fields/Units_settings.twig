@@ -46,3 +46,39 @@
     value: field.defaultUnits,
     errors: field.getErrors("defaultUnits"),
 }) }}
+
+{{ forms.textField({
+    label: "Min Value"|t('units'),
+    id: 'min',
+    name: 'min',
+    value: field.min,
+    size: 5,
+    errors: field.getErrors('min')
+}) }}
+
+{{ forms.textField({
+    label: "Max Value"|t('units'),
+    id: 'max',
+    name: 'max',
+    value: field.max,
+    size: 5,
+    errors: field.getErrors('max')
+}) }}
+
+{{ forms.textField({
+    label: "Decimal Points"|t('units'),
+    id: 'decimals',
+    name: 'decimals',
+    value: field.decimals,
+    size: 1,
+    errors: field.getErrors('decimals')
+}) }}
+
+{{ forms.textField({
+    label: "Size"|t('units'),
+    id: 'size',
+    name: 'size',
+    value: field.size,
+    size: 2,
+    errors: field.getErrors('size')
+}) }}
