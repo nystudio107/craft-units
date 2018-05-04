@@ -56,27 +56,27 @@ class Units extends Field
     /**
      * @var string The default fully qualified class name of the unit of measure
      */
-    public $defaultUnitsClass = Length::class;
+    public $defaultUnitsClass;
 
     /**
      * @var float The default value of the unit of measure
      */
-    public $defaultValue = 0.0;
+    public $defaultValue;
 
     /**
      * @var string The default units that the unit of measure is in
      */
-    public $defaultUnits = 'ft';
+    public $defaultUnits;
 
     /**
      * @var bool Whether the units the field can be changed
      */
-    public $changeableUnits = true;
+    public $changeableUnits;
 
     /**
      * @var int|float The minimum allowed number
      */
-    public $min = 0;
+    public $min;
 
     /**
      * @var int|float|null The maximum allowed number
@@ -86,7 +86,7 @@ class Units extends Field
     /**
      * @var int The number of digits allowed after the decimal point
      */
-    public $decimals = 0;
+    public $decimals;
 
     /**
      * @var int|null The size of the field
@@ -104,10 +104,14 @@ class Units extends Field
         parent::init();
         /** @var Settings $settings */
         $settings = UnitsPlugin::$plugin->getSettings();
-        $this->defaultUnitsClass = $settings->defaultUnitsClass;
-        $this->defaultValue = $settings->defaultValue;
-        $this->defaultUnits = $settings->defaultUnits;
-        $this->changeableUnits = $settings->defaultChangeableUnits;
+        $this->defaultUnitsClass = $this->defaultUnitsClass ?? $settings->defaultUnitsClass;
+        $this->defaultValue = $this->defaultValue ?? $settings->defaultValue;
+        $this->defaultUnits = $this->defaultUnits ?? $settings->defaultUnits;
+        $this->changeableUnits = $this->changeableUnits ?? $settings->defaultChangeableUnits;
+        $this->min = $this->min ?? $settings->defaultMin;
+        $this->max = $this->max ?? $settings->defaultMax;
+        $this->decimals = $this->decimals ?? $settings->defaultDecimals;
+        $this->size = $this->size ?? $settings->defaultSize;
     }
 
     /**
@@ -118,14 +122,23 @@ class Units extends Field
         $rules = parent::rules();
         $rules = array_merge($rules, [
             ['defaultUnitsClass', 'string'],
-            ['defaultUnitsClass', 'default', 'value' => Length::class],
             ['defaultValue', 'number'],
-            ['defaultValue', 'default', 'value' => 0.0],
             ['defaultUnits', 'string'],
-            ['defaultUnits', 'default', 'value' => 'feet'],
             ['changeableUnits', 'boolean'],
             ['changeableUnits', 'default', 'value' => true],
+            [['min', 'max'], 'number'],
+            [['decimals', 'size'], 'integer'],
+            [
+                ['max'],
+                'compare',
+                'compareAttribute' => 'min',
+                'operator' => '>='
+            ]
         ]);
+
+        if (!$this->decimals) {
+            $rules[] = [['min', 'max'], 'integer'];
+        }
 
         return $rules;
     }
@@ -133,17 +146,9 @@ class Units extends Field
     /**
      * @inheritdoc
      */
-    public function getContentColumnType(): string
-    {
-        return Schema::TYPE_TEXT;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        if ($value instanceof UnitsData) {
+        if ($value instanceof AbstractPhysicalQuantity) {
             return $value;
         }
         // Default config
@@ -152,18 +157,17 @@ class Units extends Field
             'value' => $this->defaultValue,
             'units' => $this->defaultUnits,
         ];
-        // Handle incoming values potentially being JSON, an array, or an object
+        // Handle incoming values potentially being JSON or an array
         if (!empty($value)) {
             if (\is_string($value)) {
                 $config = Json::decodeIfJson($value);
             }
             if (\is_array($value)) {
-                $config = array_merge($config, $value);
-            }
-            if (\is_object($value) && $value instanceof Arrayable) {
-                $config = array_merge($config, $value->toArray());
+                $config = array_merge($config, array_filter($value));
             }
         }
+        // Typecast it to a float
+        $config['value'] = (float)$config['value'];
         // Create and validate the model
         $unitsData = new UnitsData($config);
         if (!$unitsData->validate()) {
@@ -174,7 +178,7 @@ class Units extends Field
             );
         }
 
-        return new $unitsData;
+        return $unitsData;
     }
 
     /**
@@ -242,6 +246,7 @@ class Units extends Field
                     'availableUnits' => $availableUnits,
                     'value' => $value,
                     'model' => $model,
+                    'field' => $this,
                 ]
             );
         }
