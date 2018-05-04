@@ -93,11 +93,8 @@ class UnitsData extends Model
     {
         return [
             ['unitsClass', 'string'],
-            ['unitsClass', 'default', 'value' => Length::class],
             ['value', 'number'],
-            ['value', 'default', 'value' =>  0.0],
             ['units', 'string'],
-            ['units', 'default', 'value' => 'ft'],
         ];
     }
 }

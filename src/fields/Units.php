@@ -26,6 +26,7 @@ use craft\i18n\Locale;
 
 use yii\base\Arrayable;
 use yii\base\InvalidConfigException;
+use yii\db\Schema;
 
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
@@ -132,6 +133,14 @@ class Units extends Field
     /**
      * @inheritdoc
      */
+    public function getContentColumnType(): string
+    {
+        return Schema::TYPE_TEXT;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function normalizeValue($value, ElementInterface $element = null)
     {
         if ($value instanceof UnitsData) {
@@ -149,10 +158,10 @@ class Units extends Field
                 $config = Json::decodeIfJson($value);
             }
             if (\is_array($value)) {
-                $config = $value;
+                $config = array_merge($config, $value);
             }
             if (\is_object($value) && $value instanceof Arrayable) {
-                $config = $value->toArray();
+                $config = array_merge($config, $value->toArray());
             }
         }
         // Create and validate the model
