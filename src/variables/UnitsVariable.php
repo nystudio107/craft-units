@@ -94,4 +94,80 @@ class UnitsVariable
 
         throw new InvalidArgumentException("Method {$method} doesn't exist");
     }
+
+    /**
+     * Outputs a floating point number as a fraction
+     *
+     * @param float $value
+     *
+     * @return string
+     */
+    public function fraction(float $value): string
+    {
+        list($whole, $decimal) = $this->float2parts($value);
+
+        return $whole.' '.$this->float2rat($decimal);
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * Convert a floating point number to the whole and the decimal
+     *
+     * @param float $number
+     * @param bool  $returnUnsigned
+     *
+     * @return array
+     */
+    protected function float2parts(float $number, bool $returnUnsigned = false): array
+    {
+        $negative = 1;
+        if ($number < 0) {
+            $negative = -1;
+            $number *= -1;
+        }
+
+        if ($returnUnsigned) {
+            return [
+                floor($number),
+                $number - floor($number),
+            ];
+        }
+
+        return [
+            floor($number) * $negative,
+            ($number - floor($number)) * $negative,
+        ];
+    }
+
+    /**
+     * Convert a floating point number to a ratio
+     *
+     * @param float $n
+     * @param float $tolerance
+     *
+     * @return string
+     */
+    protected function float2rat(float $n, float $tolerance = 1.e-6): string
+    {
+        $h1 = 1;
+        $h2 = 0;
+        $k1 = 0;
+        $k2 = 1;
+        $b = 1 / $n;
+        do {
+            $b = 1 / $b;
+            $a = floor($b);
+            $aux = $h1;
+            $h1 = $a * $h1 + $h2;
+            $h2 = $aux;
+            $aux = $k1;
+            $k1 = $a * $k1 + $k2;
+            $k2 = $aux;
+            $b = $b - $a;
+        } while (abs($n - $h1 / $k1) > $n * $tolerance);
+
+        return "$h1/$k1";
+    }
 }

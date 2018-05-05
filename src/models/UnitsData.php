@@ -15,6 +15,7 @@ use nystudio107\units\Units;
 
 use craft\base\Model;
 
+use PhpUnitsOfMeasure\UnitOfMeasureInterface;
 use yii\base\InvalidArgumentException;
 
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
@@ -62,6 +63,18 @@ class UnitsData extends Model
     // Public Methods
     // =========================================================================
 
+    /**
+     * Call through to the appropriate method in the AbstractPhysicalQuantity class
+     * in $unitsInstance, if it exists
+     *
+     * @param string $method
+     * @param array  $args
+     *
+     * @return mixed
+     * @throws InvalidArgumentException
+     * @throws \PhpUnitsOfMeasure\Exception\NonNumericValue
+     * @throws \PhpUnitsOfMeasure\Exception\NonStringUnitName
+     */
     public function __call($method, $args)
     {
         $unitsInstance = $this->unitsInstance;
@@ -104,70 +117,17 @@ class UnitsData extends Model
         return $rules;
     }
 
-    public function toFraction()
-    {
-
-    }
-    
-    // Protected Methods
-    // =========================================================================
-
     /**
-     * Convert a floating point number to the whole and the decimal
+     * Fetch the measurement as a fraction, in the given unit of measure
      *
-     * @param float $number
-     * @param bool  $returnUnsigned
+     * @param  UnitOfMeasureInterface|string $unit The desired unit of measure, or a string name of one
      *
-     * @return array
+     * @return string The measurement cast in the requested units, as a fraction
      */
-    protected function float2parts(float $number, bool $returnUnsigned = false): array
+    public function toFraction($unit): string
     {
-        $negative = 1;
-        if ($number < 0) {
-            $negative = -1;
-            $number *= -1;
-        }
+        $value = $this->toUnit($unit);
 
-        if ($returnUnsigned) {
-            return [
-                floor($number),
-                $number - floor($number),
-            ];
-        }
-
-        return [
-            floor($number) * $negative,
-            ($number - floor($number)) * $negative,
-        ];
-    }
-
-    /**
-     * Convert a floating point number to a ratio
-     *
-     * @param float $n
-     * @param float $tolerance
-     *
-     * @return string
-     */
-    protected function float2rat(float $n, float $tolerance = 1.e-6): string
-    {
-        $h1 = 1;
-        $h2 = 0;
-        $k1 = 0;
-        $k2 = 1;
-        $b = 1 / $n;
-        do {
-            $b = 1 / $b;
-            $a = floor($b);
-            $aux = $h1;
-            $h1 = $a * $h1 + $h2;
-            $h2 = $aux;
-            $aux = $k1;
-            $k1 = $a * $k1 + $k2;
-            $k2 = $aux;
-            $b = $b - $a;
-        } while (abs($n - $h1 / $k1) > $n * $tolerance);
-
-        return "$h1/$k1";
+        return Units::$variable->fraction($value);
     }
 }
