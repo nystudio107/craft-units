@@ -30,6 +30,7 @@ use PhpUnitsOfMeasure\PhysicalQuantity\Time;
 use PhpUnitsOfMeasure\PhysicalQuantity\Velocity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 
+use PhpUnitsOfMeasure\UnitOfMeasure;
 use yii\base\InvalidArgumentException;
 
 /**
@@ -148,7 +149,7 @@ class UnitsVariable
      */
     public function float2ratio(float $n, float $tolerance = 1.e-6): string
     {
-        if ($n === 0.0) {
+        if ($n === 0) {
             return '';
         }
         $h1 = 1;
@@ -169,5 +170,47 @@ class UnitsVariable
         } while (abs($n - $h1 / $k1) > $n * $tolerance);
 
         return "$h1/$k1";
+    }
+
+    /**
+     * Return all of the available units
+     *
+     * @return array
+     */
+    public function allAvailableUnits(): array
+    {
+        $unitsList = [];
+        $units = ClassHelper::getClassesInNamespace(Length::class);
+        foreach ($units as $key => $value) {
+            /** @var AbstractPhysicalQuantity $value */
+            $unitsList[$key] = $this->availableUnits($value);
+        }
+
+        return $unitsList;
+    }
+
+    /**
+     * Return the available units for a given AbstractPhysicalQuantity
+     *
+     * @param string $unitsClass
+     *
+     * @return array
+     */
+    public function availableUnits(string $unitsClass): array
+    {
+        $availableUnits = [];
+        if (is_subclass_of($unitsClass, AbstractPhysicalQuantity::class)) {
+            /** @var array $units */
+            /** @var AbstractPhysicalQuantity $unitsClass */
+            $units = $unitsClass::getUnitDefinitions();
+            /** @var UnitOfMeasure $unit */
+            foreach ($units as $unit) {
+                $name = $unit->getName();
+                $aliases = $unit->getAliases();
+                $availableUnits[$name] = $aliases[0] ?? $name;
+            }
+        }
+
+        return $availableUnits;
     }
 }

@@ -38,7 +38,6 @@
         "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft-units/master/CHANGELOG.md",
         "components": {
-            "units": "nystudio107\\units\\services\\Units"
         },
         "class": "nystudio107\\units\\Units"
     }

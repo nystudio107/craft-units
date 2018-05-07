@@ -129,6 +129,20 @@ class UnitsData extends Model
     }
 
     /**
+     * Fetch the measurement as a fraction, in the given unit of measure
+     *
+     * @param  UnitOfMeasureInterface|string $unit The desired unit of measure, or a string name of one
+     *
+     * @return string The measurement cast in the requested units, as a fraction
+     */
+    public function toUnitFraction($unit): string
+    {
+        $value = $this->toUnit($unit);
+
+        return Units::$variable->fraction($value);
+    }
+
+    /**
      * Return an array of the whole number and decimal number ports of the value
      * [0] has the whole number part, and [1] has the decimal part
      *
@@ -153,19 +167,5 @@ class UnitsData extends Model
         $parts[1] = Units::$variable->float2ratio($parts[1]);
 
         return $parts;
-    }
-
-    /**
-     * Fetch the measurement as a fraction, in the given unit of measure
-     *
-     * @param  UnitOfMeasureInterface|string $unit The desired unit of measure, or a string name of one
-     *
-     * @return string The measurement cast in the requested units, as a fraction
-     */
-    public function toUnitFraction($unit): string
-    {
-        $value = $this->toUnit($unit);
-
-        return Units::$variable->fraction($value);
     }
 }

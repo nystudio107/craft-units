@@ -24,13 +24,10 @@ use craft\base\Field;
 use craft\helpers\Json;
 use craft\i18n\Locale;
 
-use yii\base\Arrayable;
 use yii\base\InvalidConfigException;
-use yii\db\Schema;
 
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
-use PhpUnitsOfMeasure\UnitOfMeasure;
 
 /**
  * @author    nystudio107
@@ -186,7 +183,7 @@ class Units extends Field
      */
     public function getSettingsHtml()
     {
-        $availableUnits = $this->availableUnits(Length::class);
+        $availableUnits = UnitsPlugin::$variable->availableUnits(Length::class);
         $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
 
         // Render the settings template
@@ -212,7 +209,7 @@ class Units extends Field
             } catch (InvalidConfigException $e) {
                 Craft::error($e->getMessage(), __METHOD__);
             }
-            $availableUnits = $this->availableUnits($value->unitsClass);
+            $availableUnits = UnitsPlugin::$variable->availableUnits($value->unitsClass);
             $model = $value;
             $value = $model->value;
             $decimals = $this->decimals;
@@ -250,30 +247,7 @@ class Units extends Field
                 ]
             );
         }
-    }
 
-    /**
-     * Return the available units for a given AbstractPhysicalQuantity
-     *
-     * @param string $unitsClass
-     *
-     * @return array
-     */
-    protected function availableUnits(string $unitsClass): array
-    {
-        $availableUnits = [];
-        if (is_subclass_of($unitsClass, AbstractPhysicalQuantity::class)) {
-            /** @var array $units */
-            /** @var AbstractPhysicalQuantity $unitsClass */
-            $units = $unitsClass::getUnitDefinitions();
-            /** @var UnitOfMeasure $unit */
-            foreach ($units as $unit) {
-                $name = $unit->getName();
-                $aliases = $unit->getAliases();
-                $availableUnits[$name] = $aliases[0] ?? $name;
-            }
-        }
-
-        return $availableUnits;
+        return '';
     }
 }
