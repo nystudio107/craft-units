@@ -10,6 +10,47 @@
  * @since     1.0.0UnitsUnits
  */
 
+
+/**
+ * Fill a dynamic schema.org type menu with the units data
+ *
+ * @param menuId
+ * @param menuValue
+ * @param unitsClass
+ * @param callback
+ */
+function fillDynamicUnitsMenu(menuId, menuValue, unitsClass, callback) {
+    var menu = $('#' + menuId);
+
+    if (menu.length) {
+        menu.empty();
+        $.ajax({
+                url: Craft.getActionUrl('units/units/available-units?unitsClass=' + unitsClass)
+            })
+            .done(function(data) {
+                if (blankItem) {
+                    $('<option />')
+                        .attr('value', 'none')
+                        .html('')
+                        .appendTo(menu);
+                }
+                $.each(data, function() {
+                    $('<option />')
+                        .attr('value', this)
+                        .html(this)
+                        .appendTo(menu);
+                });
+                menu.val(menuValue);
+                if (callback !== undefined) {
+                    callback();
+                }
+            })
+            .fail(function(data) {
+                console.log('Error loading units data');
+            })
+    }
+}
+
  ;(function ( $, window, document, undefined ) {
 
     var pluginName = "UnitsUnits",
