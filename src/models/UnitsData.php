@@ -129,27 +129,44 @@ class UnitsData extends Model
     }
 
     /**
+     * Return an array of the whole number and decimal number ports of the value
+     * [0] has the whole number part, and [1] has the decimal part
+     *
+     * @return float[]
+     */
+    public function getValueParts(): array
+    {
+        return Units::$variable->float2parts($this->value);
+    }
+
+    /**
+     * Return an array of the whole number and decimal number ports of the value
+     * with the decimal part converted to a fraction. [0] has the whole number part,
+     * and [1] has the fractional part
+     *
+     * @return string[]
+     */
+    public function getValuePartsFraction(): array
+    {
+        $parts = Units::$variable->float2parts($this->value);
+        $parts[0] = (string)$parts[0];
+        $parts[1] = Units::$variable->float2ratio($parts[1]);
+
+        return $parts;
+    }
+
+    /**
      * Fetch the measurement as a fraction, in the given unit of measure
      *
      * @param  UnitOfMeasureInterface|string $unit The desired unit of measure, or a string name of one
      *
      * @return string The measurement cast in the requested units, as a fraction
      */
-    public function toFraction($unit): string
+    public function toUnitFraction($unit): string
     {
         $value = $this->toUnit($unit);
 
         return Units::$variable->fraction($value);
-    }
-
-    /**
-     * Return an array of the whole number and decimal number ports of the value
-     *
-     * @return array
-     */
-    public function getValueParts(): array
-    {
-        return Units::$variable->float2parts($this->value);
     }
 
 }

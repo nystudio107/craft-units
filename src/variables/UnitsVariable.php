@@ -106,7 +106,7 @@ class UnitsVariable
     {
         list($whole, $decimal) = $this->float2parts($value);
 
-        return $whole.' '.$this->float2rat($decimal);
+        return $whole.' '.$this->float2ratio($decimal);
     }
 
     /**
@@ -138,9 +138,6 @@ class UnitsVariable
         ];
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * Convert a floating point number to a ratio
      *
@@ -149,8 +146,11 @@ class UnitsVariable
      *
      * @return string
      */
-    protected function float2rat(float $n, float $tolerance = 1.e-6): string
+    public function float2ratio(float $n, float $tolerance = 1.e-6): string
     {
+        if ($n === 0.0) {
+            return '';
+        }
         $h1 = 1;
         $h2 = 0;
         $k1 = 0;
