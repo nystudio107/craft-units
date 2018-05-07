@@ -86,6 +86,17 @@ class UnitsData extends Model
     }
 
     /**
+     * Return the AbstractPhysicalQuantity's __toString() result, which will be
+     * the value and units as a string
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->unitsInstance->__toString();
+    }
+
+    /**
      * @inheritdoc
      */
     public function init()
