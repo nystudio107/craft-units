@@ -168,5 +168,4 @@ class UnitsData extends Model
 
         return Units::$variable->fraction($value);
     }
-
 }
