@@ -19,18 +19,18 @@ use PhpUnitsOfMeasure\UnitOfMeasureInterface;
 use yii\base\InvalidArgumentException;
 
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
+use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 
 /**
  * @author    nystudio107
  * @package   Units
  * @since     1.0.0
  *
- * @method float toUnit($toUnit)
+ * @method float toUnit(UnitOfMeasureInterface|string $unit)
  * @method float toNativeUnit()
- * @method float add()
- * @method float subtract()
- * @method bool isEquivalentQuantity()
+ * @method float add(PhysicalQuantityInterface $quantity)
+ * @method float subtract(PhysicalQuantityInterface $quantity)
+ * @method bool isEquivalentQuantity(PhysicalQuantityInterface $testQuantity)
  */
 class UnitsData extends Model
 {
@@ -141,4 +141,15 @@ class UnitsData extends Model
 
         return Units::$variable->fraction($value);
     }
+
+    /**
+     * Return an array of the whole number and decimal number ports of the value
+     *
+     * @return array
+     */
+    public function getValueParts(): array
+    {
+        return Units::$variable->float2parts($this->value);
+    }
+
 }

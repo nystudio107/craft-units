@@ -109,9 +109,6 @@ class UnitsVariable
         return $whole.' '.$this->float2rat($decimal);
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * Convert a floating point number to the whole and the decimal
      *
@@ -120,7 +117,7 @@ class UnitsVariable
      *
      * @return array
      */
-    protected function float2parts(float $number, bool $returnUnsigned = false): array
+    public function float2parts(float $number, bool $returnUnsigned = false): array
     {
         $negative = 1;
         if ($number < 0) {
@@ -140,6 +137,9 @@ class UnitsVariable
             ($number - floor($number)) * $negative,
         ];
     }
+
+    // Protected Methods
+    // =========================================================================
 
     /**
      * Convert a floating point number to a ratio
