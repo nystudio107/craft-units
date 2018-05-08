@@ -16,11 +16,10 @@
 
 {% import "_includes/forms" as forms %}
 
-{% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\units\\UnitsAsset") %}
+{% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\unitsfield\\UnitsFieldAsset") %}
 
 {{ forms.selectField({
     label: "Measure Type"|t("units"),
-    instructions: "blah."|t("units"),
     id: "defaultUnitsClass",
     name: "defaultUnitsClass",
     options: unitsClassMap,
@@ -30,21 +29,28 @@
 
 {{ forms.textField({
     label: "Default Value"|t("units"),
-    instructions: "blah."|t("units"),
     id: 'defaultValue',
     name: 'defaultValue',
     value: field.defaultValue,
+    size: 5,
     errors: field.getErrors("defaultValue"),
 }) }}
 
 {{ forms.selectField({
     label: "Default Units"|t("units"),
-    instructions: "blah."|t("units"),
     id: "defaultUnits",
     name: "defaultUnits",
-    options: availableUnits,
+    options: [],
     value: field.defaultUnits,
     errors: field.getErrors("defaultUnits"),
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Units Changeable"|t("units"),
+    id: "changeableUnits",
+    name: "changeableUnits",
+    on: field.changeableUnits,
+    errors: field.getErrors("changeableUnits"),
 }) }}
 
 {{ forms.textField({
@@ -82,3 +88,19 @@
     size: 2,
     errors: field.getErrors('size')
 }) }}
+
+
+{% js %}
+    // Fill in the dynamic unit menu
+    var defaultUnitsId = '{{ "defaultUnits" |namespaceInputId }}';
+    var defaultUnitsClassId = '{{ "defaultUnitsClass" |namespaceInputId }}';
+
+    var value = $('#'+defaultUnitsClassId).val();
+
+    fillDynamicUnitsMenu(defaultUnitsId, '{{ field.defaultUnits }}', value);
+
+    $('#'+defaultUnitsClassId).on('change', function(e) {
+        var value = $('#'+defaultUnitsClassId).val();
+        fillDynamicUnitsMenu(defaultUnitsId, '{{ field.defaultUnits }}', value);
+    });
+{% endjs %}

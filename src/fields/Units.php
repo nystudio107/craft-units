@@ -122,7 +122,6 @@ class Units extends Field
             ['defaultValue', 'number'],
             ['defaultUnits', 'string'],
             ['changeableUnits', 'boolean'],
-            ['changeableUnits', 'default', 'value' => true],
             [['min', 'max'], 'number'],
             [['decimals', 'size'], 'integer'],
             [

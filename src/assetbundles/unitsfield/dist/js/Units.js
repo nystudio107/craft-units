@@ -28,19 +28,19 @@ function fillDynamicUnitsMenu(menuId, menuValue, unitsClass, callback) {
                 url: Craft.getActionUrl('units/units/available-units?unitsClass=' + unitsClass)
             })
             .done(function(data) {
-                if (blankItem) {
-                    $('<option />')
-                        .attr('value', 'none')
-                        .html('')
-                        .appendTo(menu);
+                var newValue = Object.keys(data)[0];
+                for (var k in data) {
+                    if (data.hasOwnProperty(k)) {
+                        if (k === menuValue) {
+                            newValue = menuValue;
+                        }
+                        $('<option />')
+                            .attr('value', k)
+                            .html(data[k])
+                            .appendTo(menu);
+                    }
                 }
-                $.each(data, function() {
-                    $('<option />')
-                        .attr('value', this)
-                        .html(this)
-                        .appendTo(menu);
-                });
-                menu.val(menuValue);
+                menu.val(newValue);
                 if (callback !== undefined) {
                     callback();
                 }

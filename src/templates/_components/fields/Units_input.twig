@@ -1,5 +1,6 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
 {# @var model \nystudio107\units\models\UnitsData #}
+{# @var field \nystudio107\units\fields\Units #}
 {#
 /**
  * Units plugin for Craft CMS 3.x
@@ -16,6 +17,8 @@
 
 {% import "_includes/forms" as forms %}
 
+{% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\unitsfield\\UnitsFieldAsset") %}
+
 {{ forms.textField({
     id: id ~ "value",
     name: name ~ "[value]",
@@ -24,10 +27,27 @@
     errors: model.getErrors("value"),
 }) }}
 
-{{ forms.selectField({
-    id: id ~ "units",
-    name: name ~ "[units]",
-    options: availableUnits,
-    value: model.units,
-    errors: model.getErrors("units"),
-}) }}
+{% if field.changeableUnits %}
+    <div class="field units-field-units-select">
+    {{ forms.select({
+        id: id ~ "units",
+        name: name ~ "[units]",
+        options: [],
+        value: model.units,
+        errors: model.getErrors("units"),
+    }) }}
+    </div>
+{% else %}
+    <div class="field units-field-units">
+        <div class="heading">
+            <p class="instructions">{{ field.defaultUnits }}</p>
+        </div>
+    </div>
+{% endif %}
+
+{% js %}
+    // Fill in the dynamic unit menu
+    var unitsId = '{{ namespacedId ~ "units" }}';
+
+    fillDynamicUnitsMenu(unitsId, '{{ model.units }}', '{{ model.unitsClass |e('js') }}');
+{% endjs %}
