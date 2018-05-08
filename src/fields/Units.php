@@ -17,6 +17,7 @@ use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\Settings;
 use nystudio107\units\models\UnitsData;
 use nystudio107\units\Units as UnitsPlugin;
+use nystudio107\units\validators\EmbeddedModelValidator;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -248,5 +249,15 @@ class Units extends Field
         }
 
         return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getElementValidationRules(): array
+    {
+        return [
+            EmbeddedModelValidator::class,
+        ];
     }
 }
