@@ -22,6 +22,7 @@ use nystudio107\units\validators\EmbeddedModelValidator;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\base\PreviewableFieldInterface;
 use craft\helpers\Json;
 use craft\i18n\Locale;
 
@@ -35,7 +36,7 @@ use PhpUnitsOfMeasure\PhysicalQuantity\Length;
  * @package   Units
  * @since     1.0.0
  */
-class Units extends Field
+class Units extends Field implements PreviewableFieldInterface
 {
     // Static Methods
     // =========================================================================
