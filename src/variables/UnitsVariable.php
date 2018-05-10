@@ -11,6 +11,7 @@
 namespace nystudio107\units\variables;
 
 use nystudio107\units\helpers\ClassHelper;
+use nystudio107\units\models\UnitsData;
 
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantityInterface;
@@ -74,23 +75,24 @@ class UnitsVariable
      * @param $method
      * @param $args
      *
-     * @return PhysicalQuantityInterface
+     * @return UnitsData
      * @throws InvalidArgumentException
-     * @throws \PhpUnitsOfMeasure\Exception\NonNumericValue
-     * @throws \PhpUnitsOfMeasure\Exception\NonStringUnitName
      */
-    public function __call($method, $args): PhysicalQuantityInterface
+    public function __call($method, $args): UnitsData
     {
         if (empty($this->unitsClassMap)) {
             $this->unitsClassMap = ClassHelper::getClassesInNamespace(Length::class);
         }
         $unitsClassKey = ucfirst($method);
         if (isset($this->unitsClassMap[$unitsClassKey])) {
-            /** @var AbstractPhysicalQuantity $unitsClassName */
-            $unitsClassName = $this->unitsClassMap[$unitsClassKey];
             list($value, $units) = $args;
+            $config = [
+                'unitsClass' =>$this->unitsClassMap[$unitsClassKey],
+                'value' => $value,
+                'units' => $units,
+            ];
 
-            return new $unitsClassName($value, $units);
+            return new UnitsData($config);
         }
 
         throw new InvalidArgumentException("Method {$method} doesn't exist");
