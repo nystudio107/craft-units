@@ -130,8 +130,8 @@ class Units extends Field implements PreviewableFieldInterface
                 ['max'],
                 'compare',
                 'compareAttribute' => 'min',
-                'operator' => '>='
-            ]
+                'operator' => '>=',
+            ],
         ]);
 
         if (!$this->decimals) {
@@ -258,7 +258,13 @@ class Units extends Field implements PreviewableFieldInterface
     public function getElementValidationRules(): array
     {
         return [
-            EmbeddedUnitsDataValidator::class,
+            [
+                EmbeddedUnitsDataValidator::class,
+                'units' => $this->defaultUnits,
+                'integerOnly' => $this->decimals ? false : true,
+                'min' => $this->min,
+                'max' => $this->max,
+            ],
         ];
     }
 }

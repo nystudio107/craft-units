@@ -30,6 +30,11 @@ class EmbeddedUnitsDataValidator extends Validator
     // =========================================================================
 
     /**
+     * @var string the base units
+     */
+    public $units;
+
+    /**
      * @var bool whether the attribute value can only be an integer. Defaults
      *      to false.
      */
@@ -62,6 +67,8 @@ class EmbeddedUnitsDataValidator extends Validator
         if ($value !== null && \is_object($value) && $value instanceof UnitsData) {
             // Validate the model
             $value->validate();
+            // Normalize the min/max value
+            $this->normalizeMinMax($value);
             // Do a min/max validation, too
             $config = [
                 'integerOnly' => $this->integerOnly,
@@ -77,12 +84,25 @@ class EmbeddedUnitsDataValidator extends Validator
                 foreach ($valueErrors as $valueError) {
                     $model->addError(
                         $attribute,
-                        $attributeError.' - '.$valueError
+                        $valueError
                     );
                 }
             }
         } else {
             $model->addError($attribute, Craft::t('units', 'Is not a Model object.'));
         }
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * Normalize the min/max values using the base units
+     *
+     * @param UnitsData $unitsData
+     */
+    protected function normalizeMinMax(UnitsData $unitsData)
+    {
+
     }
 }
