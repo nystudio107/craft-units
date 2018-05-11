@@ -111,7 +111,7 @@ class EmbeddedUnitsDataValidator extends Validator
         $config['value'] = $this->min;
         $baseUnit = new UnitsData($config);
         $this->min = $baseUnit->toUnit($unitsData->units);
-        // Normalize the min
+        // Normalize the max
         $config['value'] = $this->max;
         $baseUnit = new UnitsData($config);
         $this->max = $baseUnit->toUnit($unitsData->units);
