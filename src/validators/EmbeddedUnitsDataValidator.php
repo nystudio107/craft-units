@@ -103,6 +103,17 @@ class EmbeddedUnitsDataValidator extends Validator
      */
     protected function normalizeMinMax(UnitsData $unitsData)
     {
-
+        $config = [
+            'unitsClass' => $unitsData->unitsClass,
+            'units' => $this->units
+        ];
+        // Normalize the min
+        $config['value'] = $this->min;
+        $baseUnit = new UnitsData($config);
+        $this->min = $baseUnit->toUnit($unitsData->units);
+        // Normalize the min
+        $config['value'] = $this->max;
+        $baseUnit = new UnitsData($config);
+        $this->max = $baseUnit->toUnit($unitsData->units);
     }
 }
