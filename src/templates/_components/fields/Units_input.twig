@@ -24,7 +24,6 @@
     name: name ~ "[value]",
     value: value,
     size: field.size,
-    errors: model.getErrors("value"),
 }) }}
 
 {% if field.changeableUnits %}
@@ -34,7 +33,6 @@
         name: name ~ "[units]",
         options: [],
         value: model.units,
-        errors: model.getErrors("units"),
     }) }}
     </div>
 {% else %}
