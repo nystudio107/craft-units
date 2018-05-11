@@ -11,6 +11,7 @@
 
 namespace nystudio107\units\models;
 
+use Helper\Unit;
 use nystudio107\units\Units;
 
 use craft\base\Model;
@@ -158,7 +159,7 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     public function add(PhysicalQuantityInterface $quantity)
     {
         /** @var UnitsData $quantity */
-        return $this->unitsInstance->add($quantity->unitsInstance);
+        return $this->physicalQuantityToUnitsData($this->unitsInstance->add($quantity->unitsInstance));
     }
 
     /**
@@ -167,7 +168,7 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     public function subtract(PhysicalQuantityInterface $quantity)
     {
         /** @var UnitsData $quantity */
-        return $this->unitsInstance->subtract($quantity->unitsInstance);
+        return $this->physicalQuantityToUnitsData($this->unitsInstance->subtract($quantity->unitsInstance));
     }
 
     /**
@@ -230,5 +231,28 @@ class UnitsData extends Model implements PhysicalQuantityInterface
         $parts[1] = Units::$variable->float2ratio($parts[1]);
 
         return $parts;
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * Convert a PhysicalQuantity object into a UnitsData object
+     *
+     * @param PhysicalQuantityInterface $quantity
+     *
+     * @return UnitsData
+     */
+    protected function physicalQuantityToUnitsData(PhysicalQuantityInterface $quantity): UnitsData
+    {
+        $unitsClass = \get_class($quantity);
+        list($value, $units) = explode(' ', (string)$quantity);
+        $config = [
+            'unitsClass' => $unitsClass,
+            'value' => $value,
+            'units' => $units,
+        ];
+
+        return new UnitsData($config);
     }
 }
