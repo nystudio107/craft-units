@@ -177,15 +177,17 @@ class UnitsVariable
     /**
      * Return all of the available units
      *
+     * @param bool   $includeAliases whether to include aliases or not
+     *
      * @return array
      */
-    public function allAvailableUnits(): array
+    public function allAvailableUnits(bool $includeAliases = false): array
     {
         $unitsList = [];
         $units = ClassHelper::getClassesInNamespace(Length::class);
         foreach ($units as $key => $value) {
             /** @var AbstractPhysicalQuantity $value */
-            $unitsList[$key] = $this->availableUnits($value);
+            $unitsList[$key] = $this->availableUnits($value, $includeAliases);
         }
 
         return $unitsList;
@@ -195,10 +197,11 @@ class UnitsVariable
      * Return the available units for a given AbstractPhysicalQuantity
      *
      * @param string $unitsClass
+     * @param bool   $includeAliases whether to include aliases or not
      *
      * @return array
      */
-    public function availableUnits(string $unitsClass): array
+    public function availableUnits(string $unitsClass, bool $includeAliases = false): array
     {
         $availableUnits = [];
         if (is_subclass_of($unitsClass, AbstractPhysicalQuantity::class)) {
@@ -209,7 +212,7 @@ class UnitsVariable
             foreach ($units as $unit) {
                 $name = $unit->getName();
                 $aliases = $unit->getAliases();
-                $availableUnits[$name] = $aliases[0] ?? $name;
+                $availableUnits[$name] = $includeAliases ? $aliases : $aliases[0] ?? $name;
             }
         }
 

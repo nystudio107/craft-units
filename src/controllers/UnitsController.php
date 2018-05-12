@@ -40,22 +40,25 @@ class UnitsController extends Controller
     /**
      * Return all of the available units as JSON
      *
+     * @param bool   $includeAliases whether to include aliases or not
+     *
      * @return Response
      */
-    public function actionAllAvailableUnits(): Response
+    public function actionAllAvailableUnits(bool $includeAliases = false): Response
     {
-        return $this->asJson(Units::$variable->allAvailableUnits());
+        return $this->asJson(Units::$variable->allAvailableUnits($includeAliases));
     }
 
     /**
      * Return the available units for a given AbstractPhysicalQuantity as JSON
      *
      * @param string $unitsClass
+     * @param bool   $includeAliases whether to include aliases or not
      *
      * @return Response
      */
-    public function actionAvailableUnits(string $unitsClass): Response
+    public function actionAvailableUnits(string $unitsClass, bool $includeAliases = false): Response
     {
-        return $this->asJson(Units::$variable->availableUnits($unitsClass));
+        return $this->asJson(Units::$variable->availableUnits($unitsClass, $includeAliases));
     }
 }
