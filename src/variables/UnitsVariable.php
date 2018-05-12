@@ -151,7 +151,7 @@ class UnitsVariable
      */
     public function float2ratio(float $n, float $tolerance = 1.e-6): string
     {
-        if ($n === 0) {
+        if ($n === 0.0) {
             return '';
         }
         $h1 = 1;
