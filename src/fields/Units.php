@@ -184,7 +184,6 @@ class Units extends Field implements PreviewableFieldInterface
      */
     public function getSettingsHtml()
     {
-        $availableUnits = UnitsPlugin::$variable->availableUnits(Length::class);
         $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
 
         // Render the settings template
@@ -193,7 +192,6 @@ class Units extends Field implements PreviewableFieldInterface
             [
                 'field' => $this,
                 'unitsClassMap' => $unitsClassMap,
-                'availableUnits' => $availableUnits,
             ]
         );
     }
@@ -210,7 +208,6 @@ class Units extends Field implements PreviewableFieldInterface
             } catch (InvalidConfigException $e) {
                 Craft::error($e->getMessage(), __METHOD__);
             }
-            $availableUnits = UnitsPlugin::$variable->availableUnits($value->unitsClass);
             $model = $value;
             $value = $model->value;
             $decimals = $this->decimals;
@@ -241,7 +238,6 @@ class Units extends Field implements PreviewableFieldInterface
                     'field' => $this,
                     'id' => $id,
                     'namespacedId' => $namespacedId,
-                    'availableUnits' => $availableUnits,
                     'value' => $value,
                     'model' => $model,
                     'field' => $this,

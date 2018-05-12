@@ -16,6 +16,7 @@
 
 {% import "_includes/forms" as forms %}
 
+{% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\units\\UnitsAsset") %}
 {% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\unitsfield\\UnitsFieldAsset") %}
 
 {{ forms.selectField({
@@ -40,7 +41,7 @@
     label: "Default Units"|t("units"),
     id: "defaultUnits",
     name: "defaultUnits",
-    options: [],
+    options: craft.units.availableUnits(field.defaultUnitsClass),
     value: field.defaultUnits,
     errors: field.getErrors("defaultUnits"),
 }) }}
@@ -94,10 +95,6 @@
     // Fill in the dynamic unit menu
     var defaultUnitsId = '{{ "defaultUnits" |namespaceInputId }}';
     var defaultUnitsClassId = '{{ "defaultUnitsClass" |namespaceInputId }}';
-
-    var value = $('#'+defaultUnitsClassId).val();
-
-    fillDynamicUnitsMenu(defaultUnitsId, '{{ field.defaultUnits }}', value);
 
     $('#'+defaultUnitsClassId).on('change', function(e) {
         var value = $('#'+defaultUnitsClassId).val();

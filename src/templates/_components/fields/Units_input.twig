@@ -17,6 +17,7 @@
 
 {% import "_includes/forms" as forms %}
 
+{% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\units\\UnitsAsset") %}
 {% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\unitsfield\\UnitsFieldAsset") %}
 
 {{ forms.textField({
@@ -31,7 +32,7 @@
     {{ forms.select({
         id: id ~ "units",
         name: name ~ "[units]",
-        options: [],
+        options: craft.units.availableUnits(model.unitsClass),
         value: model.units,
     }) }}
     </div>
@@ -42,10 +43,3 @@
         </div>
     </div>
 {% endif %}
-
-{% js %}
-    // Fill in the dynamic unit menu
-    var unitsId = '{{ namespacedId ~ "units" }}';
-
-    fillDynamicUnitsMenu(unitsId, '{{ model.units }}', '{{ model.unitsClass |e('js') }}');
-{% endjs %}

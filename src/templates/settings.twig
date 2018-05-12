@@ -17,10 +17,96 @@
 
 {% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\units\\UnitsAsset") %}
 
-{{ forms.textField({
-    label: 'Some Field',
-    instructions: 'Enter some setting here.',
-    id: 'someAttribute',
-    name: 'someAttribute',
-    value: settings['someAttribute']})
-}}
+<div class="readable">
+
+    <div class="heading">
+        <div class="instructions">
+            <p class="">
+                {{ "Default settings for newly created Units fields"|t("units") }}
+            </p>
+        </div>
+    </div>
+
+    {{ forms.selectField({
+        label: "Default Measure Type"|t("units"),
+        id: "defaultUnitsClass",
+        name: "defaultUnitsClass",
+        options: unitsClassMap,
+        value: settings.defaultUnitsClass,
+        errors: settings.getErrors("defaultUnitsClass"),
+    }) }}
+
+    {{ forms.textField({
+        label: "Default Value"|t("units"),
+        id: 'defaultValue',
+        name: 'defaultValue',
+        value: settings.defaultValue,
+        size: 5,
+        errors: settings.getErrors("defaultValue"),
+    }) }}
+
+    {{ forms.selectField({
+        label: "Default Units"|t("units"),
+        id: "defaultUnits",
+        name: "defaultUnits",
+        options: craft.units.availableUnits(settings.defaultUnitsClass),
+        value: settings.defaultUnits,
+        errors: settings.getErrors("defaultUnits"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Default Units Changeable"|t("units"),
+        id: "defaultChangeableUnits",
+        name: "defaultChangeableUnits",
+        on: settings.defaultChangeableUnits,
+        errors: settings.getErrors("defaultChangeableUnits"),
+    }) }}
+
+    {{ forms.textField({
+        label: "Default Min Value"|t('units'),
+        id: 'defaultMin',
+        name: 'defaultMin',
+        value: settings.defaultMin,
+        size: 5,
+        errors: settings.getErrors('defaultMin')
+    }) }}
+
+    {{ forms.textField({
+        label: "Default Max Value"|t('units'),
+        id: 'defaultMax',
+        name: 'defaultMax',
+        value: settings.defaultMax,
+        size: 5,
+        errors: settings.getErrors('defaultMax')
+    }) }}
+
+    {{ forms.textField({
+        label: "Default Decimal Points"|t('units'),
+        id: 'defaultDecimals',
+        name: 'defaultDecimals',
+        value: settings.defaultDecimals,
+        size: 1,
+        errors: settings.getErrors('defaultDecimals')
+    }) }}
+
+    {{ forms.textField({
+        label: "Default Size"|t('units'),
+        id: 'defaultSize',
+        name: 'defaultSize',
+        value: settings.defaultSize,
+        size: 2,
+        errors: settings.getErrors('defaultSize')
+    }) }}
+
+</div>
+
+{% js %}
+    // Fill in the dynamic unit menu
+    var defaultUnitsId = '{{ "defaultUnits" |namespaceInputId }}';
+    var defaultUnitsClassId = '{{ "defaultUnitsClass" |namespaceInputId }}';
+
+    $('#'+defaultUnitsClassId).on('change', function(e) {
+        var value = $('#'+defaultUnitsClassId).val();
+        fillDynamicUnitsMenu(defaultUnitsId, '{{ settings.defaultUnits }}', value);
+    });
+{% endjs %}
