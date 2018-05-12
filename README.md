@@ -26,7 +26,7 @@ To install the plugin, follow these instructions.
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Units.
 
-You can also install SEOmatic via the **Plugin Store** in the Craft AdminCP.
+You can also install Units via the **Plugin Store** in the Craft AdminCP.
 
 ## Units Overview
 
@@ -44,6 +44,6 @@ You can also install SEOmatic via the **Plugin Store** in the Craft AdminCP.
 
 Some things to do, and ideas for potential features:
 
-* Release it
+* Add the ability to control what units appear in the list (because who uses _yottameters_?)
 
 Brought to you by [nystudio107](https://nystudio107.com/)
