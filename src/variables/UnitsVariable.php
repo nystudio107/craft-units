@@ -189,6 +189,7 @@ class UnitsVariable
             /** @var AbstractPhysicalQuantity $value */
             $unitsList[$key] = $this->availableUnits($value, $includeAliases);
         }
+        ksort($unitsList);
 
         return $unitsList;
     }
