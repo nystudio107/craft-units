@@ -4,10 +4,6 @@ A plugin for handling physical quantities and the units of measure in which they
 
 ![Screenshot](resources/img/plugin-logo.png)
 
-## This plugin isn't done yet, don't use it
-
-No, really.
-
 ## Requirements
 
 This plugin requires Craft CMS 3.0.0 or later.
