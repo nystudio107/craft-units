@@ -30,6 +30,8 @@ Units is a plugin that can convert between any units of measure, and comes with 
 
 You can convert from meters to feet, or liters to gallons, and anything else in between.
 
+It also has helper functions to output values as fractions, get the parts of a value, and a whole lot more.
+
 ## Configuring Units
 
 You don't have to do any configuration to use Units, but there are Settings available that allow you to set the default values to use for new Units fields, should you wish to do so:
