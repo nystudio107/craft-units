@@ -1,6 +1,6 @@
 {
     "name": "nystudio107/craft-units",
-    "description": "A plugin for handling physical quantities and the units of measure in which they're represented.",
+    "description": "Units is a plugin that can convert between any units of measure, and comes with a Field for content authors to use",
     "type": "craft-plugin",
     "version": "1.0.0",
     "keywords": [
