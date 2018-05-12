@@ -9,7 +9,9 @@
         "craftcms",
         "craft-plugin",
         "measurement",
-        "units"
+        "measures",
+        "units",
+        "conversion"
     ],
     "support": {
         "docs": "https://github.com/nystudio107/craft-units/blob/master/README.md",
