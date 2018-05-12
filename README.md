@@ -32,11 +32,375 @@ You can convert from meters to feet, or liters to gallons, and anything else in 
 
 ## Configuring Units
 
--Insert text here-
+You don't have to do any configuration to use Units, but there are Settings available that allow you to set the default values to use for new Units fields, should you wish to do so:
+
+![Screenshot](resources/screenshots/units-settings.png)
+
+These settings only affect newly created Units fields.
 
 ## Using Units
 
--Insert text here-
+### The Units Field
+
+Units comes with a Field named **Units** that allows you to make a field available to content authors that encapsulates a unit of measure:
+
+![Screenshot](resources/screenshots/units-settings.png)
+
+This field is essentially a Craft CMS **Number** field, but with additional logic to handle units of measure.
+
+* **Measure Type** - The type of physical quantity that this Units field represents (Length, Area, Volume, etc.)
+* **Default Value** - The default value to set for this field
+* **Defaults Units** - The default units to set for this field (foot, meter, mile, etc.)
+* **Units Changeable** - Whether the content author should be able to change the units when editing the field value in an Entry
+* **Min Value** - The minimum allowed value for the field, denominated in **Default Units**
+* **Max Value** - The maximum allowed value for the field, denominated in **Default Units**
+* **Decimal Points** - How many decimal points the value for the field should use
+* **Size** - The size of the field, roughly the number of digits wide the field should be
+
+If the Units Changeable lightswitch is **off**, the field will appear like this:
+
+![Screenshot](resources/screenshots/units-field-units-not-changeable.png)
+
+If the Units Changeable lightswitch is **on**, the field will appear like this:
+
+![Screenshot](resources/screenshots/units-field-units-changeable.png)
+
+If the content author does change the units the field is denominated in, Units will normalize the value to ensure that it's compared against the **Defaults Units** that the **Min Value** and **Max Value** are set to.
+
+### Templating
+
+### Creating a Unit of Measure
+
+To create a new unit of measure, you do:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.0, 'meters') %}
+```
+
+The string after the `craft.units.` determines the type of physical quantity for the unit of measure. The first parameter is the value to assign to the unit of measure, and the second parameter is the unit that it's denominated in.
+
+The following physical quantities are available:
+* **Acceleration** - `{% set unitOfMeasure = craft.units.acceleration(10.0, 'm/s²') %}`
+* **Angle** - `{% set unitOfMeasure = craft.units.angle(10.0, 'radian') %}`
+* **Area** - `{% set unitOfMeasure = craft.units.area(10.0, 'm²') %}`
+* **ElectricCurrent** - `{% set unitOfMeasure = craft.units.electricCurrent(10.0, 'amp') %}`
+* **Energy** - `{% set unitOfMeasure = craft.units.energy(10.0, 'joule') %}`
+* **Length** - `{% set unitOfMeasure = craft.units.length(10.0, 'meter') %}`
+* **Luminosity** - `{% set unitOfMeasure = craft.units.luminosity(10.0, 'candela') %}`
+* **Mass** - `{% set unitOfMeasure = craft.units.mass(10.0, 'kilogram') %}`
+* **Pressure** - `{% set unitOfMeasure = craft.units.pressure(10.0, 'pascal') %}`
+* **Quantity** - `{% set unitOfMeasure = craft.units.quantity(10.0, 'mole') %}`
+* **SolidAngle** - `{% set unitOfMeasure = craft.units.solidAngle(10.0, 'steradian') %}`
+* **Temperature** - `{% set unitOfMeasure = craft.units.temperature(10.0, '°K') %}`
+* **Time** - `{% set unitOfMeasure = craft.units.time(10.0, 'sec') %}`
+* **Velocity** - `{% set unitOfMeasure = craft.units.velocity(10.0, 'meters/sec') %}`
+* **Volume** - `{% set unitOfMeasure = craft.units.volume(10.0, 'm³') %}`
+
+**N.B.:** For a complete list of all of the available units (and their aliases) for each physical quantity, see the **Units Reference** section.
+
+### Getting a Unit of Measure from a Field
+
+To get a unit of measure from a field, simply do:
+
+```twig
+{% set unitOfMeasure = entry.someUnit %}
+```
+
+This gives you the unit of measure just as if you had created it via Twig.
+
+### Using Unit of Measure in your Templates
+
+#### Outputting Values in Decimal
+
+To output a unit of measure as a decimal value along with its units, simply do:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.0, 'meters') %}
+{{ unitOfMeasure }}
+```
+
+...or from an Entry:
+
+```twig
+{{ entry.someUnit }}
+```
+
+Output:
+
+```twig
+10.0 meters
+```
+
+To output just the decimal value:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.0, 'meters') %}
+{{ unitOfMeasure.value }}
+```
+
+...or from an Entry:
+
+```twig
+{{ entry.someUnit.value }}
+```
+
+
+Output:
+
+```twig
+10.0
+```
+
+To output just the units:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.0, 'meters') %}
+{{ unitOfMeasure.units }}
+```
+
+...or from an Entry:
+
+```twig
+{{ entry.someUnit.units }}
+```
+
+Output:
+
+```twig
+meters
+```
+
+#### Outputting Values as Fractions
+
+To output a unit of measure as a fractional value along with its units, simply do:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.3333333, 'feet') %}
+{{ unitOfMeasure.toFraction }}
+```
+
+...or from an Entry:
+
+```twig
+{{ entry.someUnit.toFraction }}
+```
+
+Output:
+
+```twig
+10 1/3 feet
+```
+
+To output just the fractional value:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.3333333, 'feet') %}
+{{ unitOfMeasure.valueFraction }}
+```
+
+...or from an Entry:
+
+```twig
+{{ entry.someUnit.valueFraction }}
+```
+
+
+Output:
+
+```twig
+10 1/3
+```
+
+**N.B.:** if you'd like to convert the text of the fractions to actual unicode fraction characters, you can use the [Typogrify](https://github.com/nystudio107/craft-typogrify) plugin to do that for you.
+
+#### Converting Values in Decimal
+
+To convert values in decimal from one unit to another, simply do:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.0, 'meters') %}
+{{ unitOfMeasure.toUnit('feet') }}
+```
+
+...or from an Entry:
+
+```twig
+{{ entry.someUnit.toUnit('feet') }}
+```
+
+Output:
+
+```twig
+32.808398950131
+```
+
+**N.B.:** For a complete list of all of the available units (and their aliases) for each physical quantity, see the **Units Reference** section.
+
+#### Converting Values as Fractions
+
+To convert values as fractions from one unit to another, simply do:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.15999998984, 'meters') %}
+{{ unitOfMeasure.toUnitFraction('feet') }}
+```
+
+...or from an Entry:
+
+```twig
+{{ entry.someUnit.toUnitFraction('feet') }}
+```
+
+Output:
+
+```twig
+33 1/3
+```
+
+**N.B.:** if you'd like to convert the text of the fractions to actual unicode fraction characters, you can use the [Typogrify](https://github.com/nystudio107/craft-typogrify) plugin to do that for you.
+
+**N.B.:** For a complete list of all of the available units (and their aliases) for each physical quantity, see the **Units Reference** section.
+
+#### Performing Arithmetic on Units of Measure
+
+Units allows you to perform arithmetic on units of measure that are denominated in different units.
+
+##### Adding Units of Measure
+
+Two add two units of measure together, simply do:
+
+```twig
+{% set someMeters = craft.units.length(10.0, 'meters') %}
+{% set someFeet = craft.units.length(10.0, 'feet') %}
+{% set result = someMeters.add(someFeet) %}
+{{ result }}
+```
+
+Output:
+
+```twig
+13.048 m
+```
+
+The `result` that is returned is a full units of measure object that you can do `result.value`, `result.units`, etc. on just like any other unit of measure.
+
+Note that the units of the `result` are denominated in the unit of measure that is performing the addition.
+
+##### Subtracting Units of Measure
+
+Two add two units of measure together, simply do:
+
+```twig
+{% set someMeters = craft.units.length(10.0, 'meters') %}
+{% set someFeet = craft.units.length(10.0, 'feet') %}
+{% set result = someMeters.subtract(someFeet) %}
+{{ result }}
+```
+
+Output:
+
+```twig
+6.952 m
+```
+
+The `result` that is returned is a full units of measure object that you can do `result.value`, `result.units`, etc. on just like any other unit of measure.
+
+Note that the units of the `result` are denominated in the unit of measure that is performing the subtraction.
+
+#### Advanced Usage
+
+##### Getting Value Parts in Decimal
+
+To get the whole number and decimal part of a unit value, simply do:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.3333333, 'meters') %}
+{% set unitParts = unitOfMeasure.valueParts() %}
+{{ unitParts[0] }}
+{{ unitParts[1] }}
+```
+Output:
+
+```twig
+10
+0.3333333
+```
+
+##### Getting Value Parts as Fractions
+
+To get the whole number and fractional part of a unit value, simply do:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.3333333, 'meters') %}
+{% set unitParts = unitOfMeasure.valuePartsFraction() %}
+{{ unitParts[0] }}
+{{ unitParts[1] }}
+```
+Output:
+
+```twig
+10
+1/3
+```
+
+**N.B.:** if you'd like to convert the text of the fractions to actual unicode fraction characters, you can use the [Typogrify](https://github.com/nystudio107/craft-typogrify) plugin to do that for you.
+
+##### Getting Available Units
+
+To get an array of all of the units available for a given units of measure, simply do:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.3333333, 'meters') %}
+{% set availableUnits = unitOfMeasure.availableUnits(false) %}
+{% for unit in availableUnits %}
+    {{ unit }}
+{% endfor %}
+```
+
+Output:
+
+```twig
+meter
+yottameter
+zettameter
+exameter
+petameter
+terameter
+gigameter
+megameter
+kilometer
+hectometer
+decameter
+decimeter
+centimeter
+millimeter
+micrometer
+nanometer
+picometer
+femtometer
+attometer
+zeptometer
+yoctometer
+foot
+inch
+mile
+yard
+nautical mile
+mil
+au
+```
+
+The `false` parameter causes it to just list the units, and none of their aliases. To see the available units _and_ their aliases, do:
+
+```twig
+{% set unitOfMeasure = craft.units.length(10.3333333, 'meters') %}
+{% set availableUnits = unitOfMeasure.availableUnits(true) %}
+{% for unit,aliases in availableUnits %}
+    {{ unit }}
+{% endfor %}
+```
+
+In this loop, `aliases` will be an array of aliases for a given unit (if any).
 
 ## Units Reference
 
