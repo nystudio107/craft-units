@@ -1,4 +1,6 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
+{# @var model \nystudio107\units\models\UnitsData #}
+{# @var field \nystudio107\units\fields\Units #}
 {#
 /**
  * Units plugin for Craft CMS 3.x
@@ -15,10 +17,29 @@
 
 {% import "_includes/forms" as forms %}
 
+{% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\units\\UnitsAsset") %}
+{% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\unitsfield\\UnitsFieldAsset") %}
+
 {{ forms.textField({
-        label: 'Some Field',
-        instructions: 'Enter some text here.',
-        id: name,
-        name: name,
-        value: value})
-}}
+    id: id ~ "value",
+    name: name ~ "[value]",
+    value: value,
+    size: field.size,
+}) }}
+
+{% if field.changeableUnits %}
+    <div class="field units-field-units-select">
+    {{ forms.select({
+        id: id ~ "units",
+        name: name ~ "[units]",
+        options: craft.units.availableUnits(model.unitsClass),
+        value: model.units,
+    }) }}
+    </div>
+{% else %}
+    <div class="field units-field-units">
+        <div class="heading">
+            <p class="instructions">{{ field.defaultUnits }}</p>
+        </div>
+    </div>
+{% endif %}

@@ -13,20 +13,19 @@ namespace nystudio107\units;
 use nystudio107\units\fields\Units as UnitsField;
 use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\Settings;
-use nystudio107\units\services\Units as UnitsService;
 use nystudio107\units\variables\UnitsVariable;
-
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
 use craft\events\PluginEvent;
-use craft\services\Fields;
-use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterComponentTypesEvent;
+use craft\services\Fields;
+use craft\services\Plugins;
+use craft\web\twig\variables\CraftVariable;
 
 use yii\base\Event;
+
+use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 /**
  * Class Units
@@ -34,8 +33,6 @@ use yii\base\Event;
  * @author    nystudio107
  * @package   Units
  * @since     1.0.0
- *
- * @property  UnitsService $units
  */
 class Units extends Plugin
 {
@@ -125,11 +122,13 @@ class Units extends Plugin
      */
     protected function settingsHtml(): string
     {
+        $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
         return Craft::$app->view->renderTemplate(
             'units/settings',
             [
-                'settings' => $this->getSettings()
-            ]
+                'settings' => $this->getSettings(),
+                 'unitsClassMap' => $unitsClassMap,
+           ]
         );
     }
 }

@@ -17,10 +17,10 @@
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\units\\UnitsAsset") %}
+{% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\unitsfield\\UnitsFieldAsset") %}
 
 {{ forms.selectField({
     label: "Measure Type"|t("units"),
-    instructions: "blah."|t("units"),
     id: "defaultUnitsClass",
     name: "defaultUnitsClass",
     options: unitsClassMap,
@@ -30,19 +30,74 @@
 
 {{ forms.textField({
     label: "Default Value"|t("units"),
-    instructions: "blah."|t("units"),
     id: 'defaultValue',
     name: 'defaultValue',
     value: field.defaultValue,
+    size: 5,
     errors: field.getErrors("defaultValue"),
 }) }}
 
 {{ forms.selectField({
     label: "Default Units"|t("units"),
-    instructions: "blah."|t("units"),
     id: "defaultUnits",
     name: "defaultUnits",
-    options: availableUnits,
+    options: craft.units.availableUnits(field.defaultUnitsClass),
     value: field.defaultUnits,
     errors: field.getErrors("defaultUnits"),
 }) }}
+
+{{ forms.lightswitchField({
+    label: "Units Changeable"|t("units"),
+    id: "changeableUnits",
+    name: "changeableUnits",
+    on: field.changeableUnits,
+    errors: field.getErrors("changeableUnits"),
+}) }}
+
+{{ forms.textField({
+    label: "Min Value"|t('units'),
+    id: 'min',
+    name: 'min',
+    value: field.min,
+    size: 5,
+    errors: field.getErrors('min')
+}) }}
+
+{{ forms.textField({
+    label: "Max Value"|t('units'),
+    id: 'max',
+    name: 'max',
+    value: field.max,
+    size: 5,
+    errors: field.getErrors('max')
+}) }}
+
+{{ forms.textField({
+    label: "Decimal Points"|t('units'),
+    id: 'decimals',
+    name: 'decimals',
+    value: field.decimals,
+    size: 1,
+    errors: field.getErrors('decimals')
+}) }}
+
+{{ forms.textField({
+    label: "Size"|t('units'),
+    id: 'size',
+    name: 'size',
+    value: field.size,
+    size: 2,
+    errors: field.getErrors('size')
+}) }}
+
+
+{% js %}
+    // Fill in the dynamic unit menu
+    var defaultUnitsId = '{{ "defaultUnits" |namespaceInputId }}';
+    var defaultUnitsClassId = '{{ "defaultUnitsClass" |namespaceInputId }}';
+
+    $('#'+defaultUnitsClassId).on('change', function(e) {
+        var value = $('#'+defaultUnitsClassId).val();
+        fillDynamicUnitsMenu(defaultUnitsId, '{{ field.defaultUnits }}', value);
+    });
+{% endjs %}

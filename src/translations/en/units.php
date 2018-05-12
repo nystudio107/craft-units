@@ -14,5 +14,25 @@
  * @since     1.0.0
  */
 return [
-    'Units plugin loaded' => 'Units plugin loaded',
+    'Min Value' => 'Min Value',
+    'Max Value' => 'Max Value',
+    'Default Size' => 'Default Size',
+    'Default Min Value' => 'Default Min Value',
+    'Is not a Model object.' => 'Is not a Model object.',
+    'Default Measure Type' => 'Default Measure Type',
+    'Size' => 'Size',
+    'Default Units Changeable' => 'Default Units Changeable',
+    'Default Value' => 'Default Value',
+    '{name} plugin loaded' => '{name} plugin loaded',
+    'blah.' => 'blah.',
+    'Default Max Value' => 'Default Max Value',
+    'Units Changeable' => 'Units Changeable',
+    'Units' => 'Units',
+    'Measure Type' => 'Measure Type',
+    'Object failed to validate' => 'Object failed to validate',
+    'Decimal Points' => 'Decimal Points',
+    'UnitsData failed validation: ' => 'UnitsData failed validation: ',
+    'Default Decimal Points' => 'Default Decimal Points',
+    'Default Units' => 'Default Units',
+    'Default settings for newly created Units fields' => 'Default settings for newly created Units fields'
 ];

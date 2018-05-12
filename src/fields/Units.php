@@ -17,23 +17,26 @@ use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\Settings;
 use nystudio107\units\models\UnitsData;
 use nystudio107\units\Units as UnitsPlugin;
+use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\base\PreviewableFieldInterface;
 use craft\helpers\Json;
+use craft\i18n\Locale;
+
+use yii\base\InvalidConfigException;
 
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
-use PhpUnitsOfMeasure\UnitOfMeasure;
-use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
  * @package   Units
  * @since     1.0.0
  */
-class Units extends Field
+class Units extends Field implements PreviewableFieldInterface
 {
     // Static Methods
     // =========================================================================
@@ -52,22 +55,42 @@ class Units extends Field
     /**
      * @var string The default fully qualified class name of the unit of measure
      */
-    public $defaultUnitsClass = Length::class;
+    public $defaultUnitsClass;
 
     /**
      * @var float The default value of the unit of measure
      */
-    public $defaultValue = 0.0;
+    public $defaultValue;
 
     /**
      * @var string The default units that the unit of measure is in
      */
-    public $defaultUnits = 'ft';
+    public $defaultUnits;
 
     /**
      * @var bool Whether the units the field can be changed
      */
-    public $changeableUnits = true;
+    public $changeableUnits;
+
+    /**
+     * @var int|float The minimum allowed number
+     */
+    public $min;
+
+    /**
+     * @var int|float|null The maximum allowed number
+     */
+    public $max;
+
+    /**
+     * @var int The number of digits allowed after the decimal point
+     */
+    public $decimals;
+
+    /**
+     * @var int|null The size of the field
+     */
+    public $size;
 
     // Public Methods
     // =========================================================================
@@ -80,10 +103,14 @@ class Units extends Field
         parent::init();
         /** @var Settings $settings */
         $settings = UnitsPlugin::$plugin->getSettings();
-        $this->defaultUnitsClass = $settings->defaultUnitsClass;
-        $this->defaultValue = $settings->defaultValue;
-        $this->defaultUnits = $settings->defaultUnits;
-        $this->changeableUnits = $settings->defaultChangeableUnits;
+        $this->defaultUnitsClass = $this->defaultUnitsClass ?? $settings->defaultUnitsClass;
+        $this->defaultValue = $this->defaultValue ?? $settings->defaultValue;
+        $this->defaultUnits = $this->defaultUnits ?? $settings->defaultUnits;
+        $this->changeableUnits = $this->changeableUnits ?? $settings->defaultChangeableUnits;
+        $this->min = $this->min ?? $settings->defaultMin;
+        $this->max = $this->max ?? $settings->defaultMax;
+        $this->decimals = $this->decimals ?? $settings->defaultDecimals;
+        $this->size = $this->size ?? $settings->defaultSize;
     }
 
     /**
@@ -94,14 +121,22 @@ class Units extends Field
         $rules = parent::rules();
         $rules = array_merge($rules, [
             ['defaultUnitsClass', 'string'],
-            ['defaultUnitsClass', 'default', 'value' => Length::class],
             ['defaultValue', 'number'],
-            ['defaultValue', 'default', 'value' => 0.0],
             ['defaultUnits', 'string'],
-            ['defaultUnits', 'default', 'value' => 'feet'],
             ['changeableUnits', 'boolean'],
-            ['changeableUnits', 'default', 'value' => true],
+            [['min', 'max'], 'number'],
+            [['decimals', 'size'], 'integer'],
+            [
+                ['max'],
+                'compare',
+                'compareAttribute' => 'min',
+                'operator' => '>=',
+            ],
         ]);
+
+        if (!$this->decimals) {
+            $rules[] = [['min', 'max'], 'integer'];
+        }
 
         return $rules;
     }
@@ -114,25 +149,23 @@ class Units extends Field
         if ($value instanceof AbstractPhysicalQuantity) {
             return $value;
         }
-
         // Default config
         $config = [
             'unitsClass' => $this->defaultUnitsClass,
             'value' => $this->defaultValue,
             'units' => $this->defaultUnits,
         ];
-        // Handle incoming values potentially being JSON, an array, or an object
+        // Handle incoming values potentially being JSON or an array
         if (!empty($value)) {
             if (\is_string($value)) {
                 $config = Json::decodeIfJson($value);
             }
             if (\is_array($value)) {
-                $config = $value;
-            }
-            if (\is_object($value) && $value instanceof UnitsData) {
-                $config = $value->toArray();
+                $config = array_merge($config, array_filter($value));
             }
         }
+        // Typecast it to a float
+        $config['value'] = (float)$config['value'];
         // Create and validate the model
         $unitsData = new UnitsData($config);
         if (!$unitsData->validate()) {
@@ -143,25 +176,7 @@ class Units extends Field
             );
         }
 
-        return new $unitsData->unitsClass($unitsData->value, $unitsData->units);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function serializeValue($value, ElementInterface $element = null)
-    {
-        if ($value instanceof AbstractPhysicalQuantity) {
-            list($originalValue, $originalUnit) = explode(' ', (string)$value);
-            $config = [
-                'unitsClass' => \get_class($value),
-                'value' => $originalValue,
-                'units' => $originalUnit,
-            ];
-            $value = new UnitsData($config);
-        }
-
-        return parent::serializeValue($value, $element);
+        return $unitsData;
     }
 
     /**
@@ -169,22 +184,14 @@ class Units extends Field
      */
     public function getSettingsHtml()
     {
-        $availableUnits = [];
-        $units = Length::getUnitDefinitions();
-        /** @var UnitOfMeasure $unit */
-        foreach ($units as $unit) {
-            $name = $unit->getName();
-            $aliases = $unit->getAliases();
-            $availableUnits[$name] = $aliases[0] ?? $name;
-        }
         $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
+
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
             'units/_components/fields/Units_settings',
             [
                 'field' => $this,
                 'unitsClassMap' => $unitsClassMap,
-                'availableUnits' => $availableUnits,
             ]
         );
     }
@@ -194,47 +201,66 @@ class Units extends Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        // Register our asset bundle
-        try {
-            Craft::$app->getView()->registerAssetBundle(UnitsFieldAsset::class);
-        } catch (InvalidConfigException $e) {
-            Craft::error($e->getMessage(), __METHOD__);
-        }
+        if ($value instanceof UnitsData) {
+            // Register our asset bundle
+            try {
+                Craft::$app->getView()->registerAssetBundle(UnitsFieldAsset::class);
+            } catch (InvalidConfigException $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            }
+            $model = $value;
+            $value = $model->value;
+            $decimals = $this->decimals;
+            // If decimals is 0 (or null, empty for whatever reason), don't run this
+            if ($decimals) {
+                $decimalSeparator = Craft::$app->getLocale()->getNumberSymbol(Locale::SYMBOL_DECIMAL_SEPARATOR);
+                $value = number_format($value, $decimals, $decimalSeparator, '');
+            }
+            // Get our id and namespace
+            $id = Craft::$app->getView()->formatInputId($this->handle);
+            $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
-        // Get our id and namespace
-        $id = Craft::$app->getView()->formatInputId($this->handle);
-        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
-
-        // Variables to pass down to our field JavaScript to let it namespace properly
-        $jsonVars = [
-            'id' => $id,
-            'name' => $this->handle,
-            'namespace' => $namespacedId,
-            'prefix' => Craft::$app->getView()->namespaceInputId(''),
-        ];
-        $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(".$jsonVars.");");
-
-        if ($value instanceof AbstractPhysicalQuantity) {
-            $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
-            list($originalValue, $originalUnit) = explode(' ', (string)$value);
-            $availableUnits = $value::getUnitDefinitions();
-        }
-
-        // Render the input template
-        return Craft::$app->getView()->renderTemplate(
-            'units/_components/fields/Units_input',
-            [
-                'name' => $this->handle,
-                'field' => $this,
+            // Variables to pass down to our field JavaScript to let it namespace properly
+            $jsonVars = [
                 'id' => $id,
-                'namespacedId' => $namespacedId,
-                'unitsClassMap' => $unitsClassMap,
-                'availableUnits' => $availableUnits,
-                'unitsClass' => \get_class($value),
-                'value' => $originalValue,
-                'units' => $originalUnit,
-            ]
-        );
+                'name' => $this->handle,
+                'namespace' => $namespacedId,
+                'prefix' => Craft::$app->getView()->namespaceInputId(''),
+            ];
+            $jsonVars = Json::encode($jsonVars);
+            Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(".$jsonVars.");");
+
+            // Render the input template
+            return Craft::$app->getView()->renderTemplate(
+                'units/_components/fields/Units_input',
+                [
+                    'name' => $this->handle,
+                    'field' => $this,
+                    'id' => $id,
+                    'namespacedId' => $namespacedId,
+                    'value' => $value,
+                    'model' => $model,
+                    'field' => $this,
+                ]
+            );
+        }
+
+        return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getElementValidationRules(): array
+    {
+        return [
+            [
+                EmbeddedUnitsDataValidator::class,
+                'units' => $this->defaultUnits,
+                'integerOnly' => $this->decimals ? false : true,
+                'min' => $this->min,
+                'max' => $this->max,
+            ],
+        ];
     }
 }

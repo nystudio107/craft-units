@@ -48,6 +48,7 @@ class ClassHelper
                 }
             }
         }
+        ksort($result);
 
         return $result;
     }
