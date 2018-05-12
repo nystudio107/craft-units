@@ -168,7 +168,7 @@ class UnitsVariable
             $aux = $k1;
             $k1 = $a * $k1 + $k2;
             $k2 = $aux;
-            $b = $b - $a;
+            $b -= $a;
         } while (abs($n - $h1 / $k1) > $n * $tolerance);
 
         return "$h1/$k1";
