@@ -11,14 +11,14 @@
 
 namespace nystudio107\units\models;
 
-use Helper\Unit;
 use nystudio107\units\Units;
 
 use craft\base\Model;
 
-use PhpUnitsOfMeasure\UnitOfMeasureInterface;
 use yii\base\InvalidArgumentException;
 
+use PhpUnitsOfMeasure\UnitOfMeasure;
+use PhpUnitsOfMeasure\UnitOfMeasureInterface;
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 
@@ -181,7 +181,34 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     }
 
     /**
-     * Fetch the measurement as a fraction, in the given unit of measure
+     * @inheritdoc
+     */
+    public function availableUnits(bool $includeAliases = true)
+    {
+        $availableUnits = [];
+        /** @var AbstractPhysicalQuantity $unitsClass */
+        $units = $this->unitsInstance::getUnitDefinitions();
+        /** @var UnitOfMeasure $unit */
+        foreach ($units as $unit) {
+            $name = $unit->getName();
+            $aliases = $unit->getAliases();
+            $availableUnits[$name] = $includeAliases ? $aliases : $aliases[0] ?? $name;
+        }
+
+        return $availableUnits;
+    }
+
+    /**
+     * Return the measurement as a fraction, with the units appended
+     *
+     * @return string
+     */
+    public function toFraction(): string
+    {
+        return trim(Units::$variable->fraction($this->value) . ' ' . $this->units);
+    }
+    /**
+     * Return the measurement as a fraction, in the given unit of measure
      *
      * @param  UnitOfMeasureInterface|string $unit The desired unit of measure,
      *                                             or a string name of one
