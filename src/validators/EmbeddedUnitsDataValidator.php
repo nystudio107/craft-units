@@ -108,12 +108,20 @@ class EmbeddedUnitsDataValidator extends Validator
             'units' => $this->units
         ];
         // Normalize the min
-        $config['value'] = $this->min;
-        $baseUnit = new UnitsData($config);
-        $this->min = $baseUnit->toUnit($unitsData->units);
+        if (!empty($this->min)) {
+            $config['value'] = (float)$this->min;
+            $baseUnit = new UnitsData($config);
+            $this->min = $baseUnit->toUnit($unitsData->units);
+        } else {
+            $this->min = null;
+        }
         // Normalize the max
-        $config['value'] = $this->max;
-        $baseUnit = new UnitsData($config);
-        $this->max = $baseUnit->toUnit($unitsData->units);
+        if (!empty($this->max)) {
+            $config['value'] = (float)$this->max;
+            $baseUnit = new UnitsData($config);
+            $this->max = $baseUnit->toUnit($unitsData->units);
+        } else {
+            $this->max = null;
+        }
     }
 }
