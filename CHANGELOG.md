@@ -1,5 +1,9 @@
 # Units Changelog
 
+## 1.0.3 - 2018-05-16
+### Changed
+- Handle incoming numeric values from a converted Number field type
+
 ## 1.0.2 - 2018-05-14
 ### Changed
 - Handle cases where there is no `min` or `max` properly in the validator

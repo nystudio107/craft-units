@@ -150,7 +150,7 @@ class Units extends Field implements PreviewableFieldInterface
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        if ($value instanceof AbstractPhysicalQuantity) {
+        if ($value instanceof UnitsData) {
             return $value;
         }
         // Default config
@@ -161,7 +161,10 @@ class Units extends Field implements PreviewableFieldInterface
         ];
         // Handle incoming values potentially being JSON or an array
         if (!empty($value)) {
-            if (\is_string($value)) {
+            // Handle a numeric value coming in (perhaps from a Number field)
+            if (\is_numeric($value)) {
+                $config['value'] = (float)$value;
+            } elseif (\is_string($value)) {
                 $config = Json::decodeIfJson($value);
             }
             if (\is_array($value)) {
