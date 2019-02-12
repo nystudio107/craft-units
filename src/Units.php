@@ -95,7 +95,7 @@ class Units extends Plugin
                 }
             }
         );
-        
+
         Event::on(
             UnitsField::class,
             'craftQlGetFieldSchema',
@@ -111,6 +111,7 @@ class Units extends Plugin
                 $object->addStringField('units');
 
                 $event->schema->addField($field)->type($object);
+                $event->handled = true;
             }
         );
 
