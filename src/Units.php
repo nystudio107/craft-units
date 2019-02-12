@@ -95,6 +95,24 @@ class Units extends Plugin
                 }
             }
         );
+        
+        Event::on(
+            UnitsField::class,
+            'craftQlGetFieldSchema',
+            function ($event) {
+                $field = $event->sender;
+
+                if (!$field instanceof UnitsField) {
+                  return;
+                }
+
+                $object = $event->schema->createObjectType(ucfirst($field->handle) . 'Units');
+                $object->addFloatField('value');
+                $object->addStringField('units');
+
+                $event->schema->addField($field)->type($object);
+            }
+        );
 
         Craft::info(
             Craft::t(
