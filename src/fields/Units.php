@@ -11,25 +11,23 @@
 
 namespace nystudio107\units\fields;
 
-use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
+use Craft;
+use craft\base\ElementInterface;
+use craft\base\PreviewableFieldInterface;
+use craft\fields\Number;
+use craft\helpers\Json;
+use craft\i18n\Locale;
 
+use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
 use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\Settings;
 use nystudio107\units\models\UnitsData;
 use nystudio107\units\Units as UnitsPlugin;
 use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 
-use Craft;
-use craft\base\ElementInterface;
-use craft\base\Field;
-use craft\base\PreviewableFieldInterface;
-use craft\helpers\Json;
-use craft\i18n\Locale;
+use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 use yii\base\InvalidConfigException;
-
-use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 /**
  * @author    nystudio107

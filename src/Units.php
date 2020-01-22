@@ -10,22 +10,22 @@
 
 namespace nystudio107\units;
 
+use Craft;
+use craft\base\Plugin;
+use craft\events\PluginEvent;
+use craft\events\RegisterComponentTypesEvent;
+
+use craft\services\Fields;
+use craft\services\Plugins;
+use craft\web\twig\variables\CraftVariable;
 use nystudio107\units\fields\Units as UnitsField;
 use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\Settings;
 use nystudio107\units\variables\UnitsVariable;
 
-use Craft;
-use craft\base\Plugin;
-use craft\events\PluginEvent;
-use craft\events\RegisterComponentTypesEvent;
-use craft\services\Fields;
-use craft\services\Plugins;
-use craft\web\twig\variables\CraftVariable;
+use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 use yii\base\Event;
-
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 /**
  * Class Units
