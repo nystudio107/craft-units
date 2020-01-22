@@ -10,9 +10,9 @@
 
 namespace nystudio107\units\models;
 
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
-
 use craft\base\Model;
+
+use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 /**
  * @author    nystudio107
@@ -30,9 +30,9 @@ class Settings extends Model
     public $defaultUnitsClass = Length::class;
 
     /**
-     * @var float The default value of the unit of measure
+     * @var int|float|null The default value of the unit of measure
      */
-    public $defaultValue = 0.0;
+    public $defaultValue;
 
     /**
      * @var string The default units that the unit of measure is in
@@ -57,12 +57,12 @@ class Settings extends Model
     /**
      * @var int The default number of digits allowed after the decimal point
      */
-    public $defaultDecimals = 3;
+    public $defaultDecimals = 2;
 
     /**
      * @var int|null The default size of the field
      */
-    public $defaultSize = 6;
+    public $defaultSize;
 
     // Public Methods
     // =========================================================================
@@ -75,13 +75,9 @@ class Settings extends Model
         $rules = parent::rules();
         $rules = array_merge($rules, [
             ['defaultUnitsClass', 'string'],
-            ['defaultUnitsClass', 'default', 'value' => Length::class],
             ['defaultValue', 'number'],
-            ['defaultValue', 'default', 'value' =>  0.0],
             ['defaultUnits', 'string'],
-            ['defaultUnits', 'default', 'value' => 'ft'],
             ['defaultChangeableUnits', 'boolean'],
-            ['defaultChangeableUnits', 'default', 'value' => true],
             [['defaultMin', 'defaultMax'], 'number'],
             [
                 ['defaultMax'],
@@ -89,11 +85,7 @@ class Settings extends Model
                 'compareAttribute' => 'defaultMin',
                 'operator' => '>='
             ],
-            ['defaultMin', 'default', 'value' => 0],
-            ['defaultMax', 'default', 'value' => null],
             [['defaultDecimals', 'defaultSize'], 'integer'],
-            ['defaultDecimals', 'default', 'value' => 3],
-            ['defaultSize', 'default', 'value' => 6],
         ]);
 
         if (!$this->defaultDecimals) {

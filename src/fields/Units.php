@@ -99,18 +99,26 @@ class Units extends Field implements PreviewableFieldInterface
     public function init()
     {
         parent::init();
-        /** @var Settings $settings */
+
         if (UnitsPlugin::$plugin !== null) {
+            /** @var Settings $settings */
             $settings = UnitsPlugin::$plugin->getSettings();
+
             if (!empty($settings)) {
                 $this->defaultUnitsClass = $this->defaultUnitsClass ?? $settings->defaultUnitsClass;
-                $this->defaultValue = $this->defaultValue ?? $settings->defaultValue;
                 $this->defaultUnits = $this->defaultUnits ?? $settings->defaultUnits;
                 $this->changeableUnits = $this->changeableUnits ?? $settings->defaultChangeableUnits;
                 $this->min = $this->min ?? $settings->defaultMin;
                 $this->max = $this->max ?? $settings->defaultMax;
                 $this->decimals = $this->decimals ?? $settings->defaultDecimals;
-                $this->size = $this->size ?? $settings->defaultSize;
+
+                if ($this->defaultValue !== null && !$this->defaultValue) {
+                    $this->defaultValue = $settings->defaultValue;
+                }
+
+                if ($this->size !== null && !$this->size) {
+                    $this->size = $settings->defaultSize;
+                }
             }
         }
     }
