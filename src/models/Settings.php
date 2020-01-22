@@ -57,7 +57,7 @@ class Settings extends Model
     /**
      * @var int The default number of digits allowed after the decimal point
      */
-    public $defaultDecimals = 2;
+    public $defaultDecimals = 0;
 
     /**
      * @var int|null The default size of the field
