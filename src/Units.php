@@ -103,7 +103,7 @@ class Units extends Plugin
                 $field = $event->sender;
 
                 if (!$field instanceof UnitsField) {
-                  return;
+                    return;
                 }
 
                 $object = $event->schema->createObjectType(ucfirst($field->handle) . 'Units');
