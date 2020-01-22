@@ -120,7 +120,7 @@ class Units extends Number implements PreviewableFieldInterface
     {
         $value = parent::normalizeValue($value, $element);
 
-        if ($value instanceof UnitsData) {
+        if ($value instanceof UnitsData || $value === null) {
             return $value;
         }
         // Default config
