@@ -34,7 +34,7 @@ use yii\base\InvalidConfigException;
  * @package   Units
  * @since     1.0.0
  */
-class Units extends Field implements PreviewableFieldInterface
+class Units extends Number implements PreviewableFieldInterface
 {
     // Static Methods
     // =========================================================================
@@ -56,11 +56,6 @@ class Units extends Field implements PreviewableFieldInterface
     public $defaultUnitsClass;
 
     /**
-     * @var float The default value of the unit of measure
-     */
-    public $defaultValue;
-
-    /**
      * @var string The default units that the unit of measure is in
      */
     public $defaultUnits;
@@ -69,26 +64,6 @@ class Units extends Field implements PreviewableFieldInterface
      * @var bool Whether the units the field can be changed
      */
     public $changeableUnits;
-
-    /**
-     * @var int|float The minimum allowed number
-     */
-    public $min;
-
-    /**
-     * @var int|float|null The maximum allowed number
-     */
-    public $max;
-
-    /**
-     * @var int The number of digits allowed after the decimal point
-     */
-    public $decimals;
-
-    /**
-     * @var int|null The size of the field
-     */
-    public $size;
 
     // Public Methods
     // =========================================================================
@@ -131,22 +106,9 @@ class Units extends Field implements PreviewableFieldInterface
         $rules = parent::rules();
         $rules = array_merge($rules, [
             ['defaultUnitsClass', 'string'],
-            ['defaultValue', 'number'],
             ['defaultUnits', 'string'],
             ['changeableUnits', 'boolean'],
-            [['min', 'max'], 'number'],
-            [['decimals', 'size'], 'integer'],
-            [
-                ['max'],
-                'compare',
-                'compareAttribute' => 'min',
-                'operator' => '>=',
-            ],
         ]);
-
-        if (!$this->decimals) {
-            $rules[] = [['min', 'max'], 'integer'];
-        }
 
         return $rules;
     }
@@ -156,6 +118,8 @@ class Units extends Field implements PreviewableFieldInterface
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
+        $value = parent::normalizeValue($value, $element);
+
         if ($value instanceof UnitsData) {
             return $value;
         }
@@ -169,16 +133,15 @@ class Units extends Field implements PreviewableFieldInterface
         if (!empty($value)) {
             // Handle a numeric value coming in (perhaps from a Number field)
             if (\is_numeric($value)) {
-                $config['value'] = (float)$value;
+                $config['value'] = $value;
             } elseif (\is_string($value)) {
                 $config = Json::decodeIfJson($value);
             }
             if (\is_array($value)) {
+                // TODO: why arrayfilter here?
                 $config = array_merge($config, array_filter($value));
             }
         }
-        // Typecast it to a float
-        $config['value'] = (float)$config['value'];
         // Create and validate the model
         $unitsData = new UnitsData($config);
         if (!$unitsData->validate()) {
