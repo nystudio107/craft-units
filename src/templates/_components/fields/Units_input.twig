@@ -20,26 +20,36 @@
 {% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\units\\UnitsAsset") %}
 {% do view.registerAssetBundle("nystudio107\\units\\assetbundles\\unitsfield\\UnitsFieldAsset") %}
 
-{{ forms.textField({
-    id: id ~ "value",
-    name: name ~ "[value]",
-    value: value,
-    size: field.size,
-}) }}
-
-{% if field.changeableUnits %}
-    <div class="field units-field-units-select">
-    {{ forms.select({
-        id: id ~ "units",
-        name: name ~ "[units]",
-        options: craft.units.availableUnits(model.unitsClass),
-        value: model.units,
-    }) }}
-    </div>
-{% else %}
-    <div class="field units-field-units">
-        <div class="heading">
-            <p class="instructions">{{ field.defaultUnits }}</p>
+<div class="flex units-field">
+    {% if field.prefix %}
+        <div>
+            {{ field.prefix|md(inlineOnly=true)|raw }}
         </div>
+    {% endif %}
+    <div>
+        {{ forms.textField({
+            id: id ~ "value",
+            name: name ~ "[value]",
+            value: value,
+            size: field.size,
+            unit: not field.changeableUnits ? field.defaultUnits
+        }) }}
     </div>
-{% endif %}
+    <div>
+        {% if field.changeableUnits %}
+            <div class="field units-field-units-select">
+                {{ forms.select({
+                    id: id ~ "units",
+                    name: name ~ "[units]",
+                    options: craft.units.availableUnits(model.unitsClass),
+                    value: model.units,
+                }) }}
+            </div>
+        {% endif %}
+    </div>
+    {% if field.suffix %}
+        <div>
+            {{ field.suffix|md(inlineOnly=true)|raw }}
+        </div>
+    {% endif %}
+</div>
