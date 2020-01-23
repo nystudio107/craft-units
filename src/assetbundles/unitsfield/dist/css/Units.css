@@ -10,10 +10,12 @@
  * @since     1.0.0
  */
 
-.units-field-units {
-    margin: -20px 9px;
+/* restrict to container on narrow widths */
+.units-field-units-select select {
+  width: 100%;
 }
 
-.units-field-units-select {
-    margin: -16px 0px;
+/* Prevent double margin and align prefix, suffix, field, and unit */
+.units-field .flex:not(.flex-nowrap) > * {
+  margin-bottom: 0;
 }
