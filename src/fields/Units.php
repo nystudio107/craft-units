@@ -163,13 +163,17 @@ class Units extends Number implements PreviewableFieldInterface
         $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
 
         // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
+        $html = Craft::$app->getView()->renderTemplate(
             'units/_components/fields/Units_settings',
             [
                 'field' => $this,
                 'unitsClassMap' => $unitsClassMap,
             ]
         );
+
+        $html .=  parent::getSettingsHtml();
+
+        return $html;
     }
 
     /**
