@@ -11,16 +11,17 @@
 
 namespace nystudio107\units\models;
 
-use nystudio107\units\Units;
-
+use Craft;
 use craft\base\Model;
 
-use yii\base\InvalidArgumentException;
+use nystudio107\units\Units;
 
+use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
+
+use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 use PhpUnitsOfMeasure\UnitOfMeasure;
 use PhpUnitsOfMeasure\UnitOfMeasureInterface;
-use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
-use PhpUnitsOfMeasure\PhysicalQuantityInterface;
+use yii\base\InvalidArgumentException;
 
 /**
  * @author    nystudio107
@@ -42,9 +43,9 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     public $unitsClass;
 
     /**
-     * @var float The value of the unit of measure
+     * @var float|null The value of the unit of measure
      */
-    public $value;
+    public $value = null;
 
     /**
      * @var string The units that the unit of measure is in
@@ -55,6 +56,11 @@ class UnitsData extends Model implements PhysicalQuantityInterface
      * @var AbstractPhysicalQuantity
      */
     public $unitsInstance;
+
+    /**
+     * @var array|null Filtered array of allowed units
+     */
+    public $allowedUnits = null;
 
     // Public Methods
     // =========================================================================
@@ -93,7 +99,7 @@ class UnitsData extends Model implements PhysicalQuantityInterface
         $this->value = $this->value ?? $settings->defaultValue;
         $this->units = $this->units ?? $settings->defaultUnits;
 
-        if ($this->unitsClass !== null) {
+        if ($this->unitsClass !== null && $this->value !== null) {
             $this->unitsInstance = new $this->unitsClass($this->value, $this->units);
         }
     }
@@ -109,6 +115,10 @@ class UnitsData extends Model implements PhysicalQuantityInterface
             ['value', 'number'],
             ['units', 'string'],
         ]);
+
+        if ($this->allowedUnits !== null) {
+            $rules[] = ['units', 'in', 'range' => $this->allowedUnits];
+        }
 
         return $rules;
     }
@@ -181,7 +191,10 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     }
 
     /**
-     * @inheritdoc
+     * Return an array of available units
+     *
+     * @param  bool $includeAliases
+     * @return string
      */
     public function availableUnits(bool $includeAliases = true)
     {
@@ -196,6 +209,31 @@ class UnitsData extends Model implements PhysicalQuantityInterface
         }
 
         return $availableUnits;
+    }
+
+    /**
+     * Return a filtered array of allowed units
+     *
+     * @param  bool $includeAliases
+     * @return string
+     */
+    public function allowedUnits(bool $includeAliases = true)
+    {
+        return array_filter($this->availableUnits($includeAliases), function ($key) {
+            return $this->allowedUnits === null ? true : in_array($key, $this->allowedUnits);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    public function allowedUnitsOptions(): array
+    {
+        $options = $this->allowedUnits(false);
+
+        array_unshift($options, [
+            'label' => Craft::t('units', 'Select One…'),
+            'value' => null,
+        ]);
+
+        return $options;
     }
 
     /**

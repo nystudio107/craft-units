@@ -37,8 +37,18 @@
     errors: field.getErrors("defaultUnits"),
 }) }}
 
+{{ forms.checkboxSelectField({
+    label: "Allowed Units"|t("units"),
+    id: "allowedUnits",
+    name: "allowedUnits",
+    showAllOption: true,
+    options: craft.units.availableUnits(field.defaultUnitsClass),
+    errors: field.getErrors("allowedUnits"),
+    values: field.allowedUnits ?? '*',
+}) }}
+
 {{ forms.lightswitchField({
-    label: "Units Changeable"|t("units"),
+    label: "Allow Units to Be Changed?"|t("units"),
     id: "changeableUnits",
     name: "changeableUnits",
     on: field.changeableUnits,
@@ -47,11 +57,11 @@
 
 {% js %}
     // Fill in the dynamic unit menu
-    var defaultUnitsId = '{{ "defaultUnits" |namespaceInputId }}';
-    var defaultUnitsClassId = '{{ "defaultUnitsClass" |namespaceInputId }}';
+    var $defaultUnits = $('#{{ "defaultUnits"|namespaceInputId }}');
+    var $allowedUnits = $('#{{ "allowedUnits"|namespaceInputId }}');
+    var $defaultUnitsClass = $('#{{ "defaultUnitsClass"|namespaceInputId }}');
 
-    $('#'+defaultUnitsClassId).on('change', function(e) {
-        var value = $('#'+defaultUnitsClassId).val();
-        fillDynamicUnitsMenu(defaultUnitsId, '{{ field.defaultUnits }}', value);
+    $defaultUnitsClass.on('change', function(event) {
+        fillUnits($defaultUnits.add($allowedUnits), event.target.value);
     });
 {% endjs %}

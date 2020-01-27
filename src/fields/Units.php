@@ -28,6 +28,7 @@ use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 use yii\base\InvalidConfigException;
+use yii\db\Schema;
 
 /**
  * @author    nystudio107
@@ -63,7 +64,12 @@ class Units extends Number implements PreviewableFieldInterface
     /**
      * @var bool Whether the units the field can be changed
      */
-    public $changeableUnits;
+    public $changeableUnits = true;
+
+    /**
+     * @var array|null Filtered array of allowed units
+     */
+    public $allowedUnits = null;
 
     // Public Methods
     // =========================================================================
@@ -75,10 +81,15 @@ class Units extends Number implements PreviewableFieldInterface
     {
         parent::init();
 
+        if ($this->allowedUnits === '*') {
+            $this->allowedUnits =  null;
+        }
+
         if (UnitsPlugin::$plugin !== null) {
             /** @var Settings $settings */
             $settings = UnitsPlugin::$plugin->getSettings();
 
+            // TODO: do we really need this?
             if (!empty($settings)) {
                 $this->defaultUnitsClass = $this->defaultUnitsClass ?? $settings->defaultUnitsClass;
                 $this->defaultUnits = $this->defaultUnits ?? $settings->defaultUnits;
@@ -98,6 +109,25 @@ class Units extends Number implements PreviewableFieldInterface
         }
     }
 
+    public static function valueType(): string
+    {
+        return UnitsData::class;
+    }
+
+    public function getContentColumnType(): string
+    {
+        return Schema::TYPE_TEXT;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContentGqlType()
+    {
+        // TODO:
+        // return NumberType::getType();
+    }
+
     /**
      * @inheritdoc
      */
@@ -109,6 +139,10 @@ class Units extends Number implements PreviewableFieldInterface
             ['defaultUnits', 'string'],
             ['changeableUnits', 'boolean'],
         ]);
+
+        if ($this->allowedUnits !== null) {
+            $rules[] = ['defaultUnits', 'in', 'range' => $this->allowedUnits];
+        }
 
         return $rules;
     }
@@ -129,6 +163,7 @@ class Units extends Number implements PreviewableFieldInterface
             'value' => $this->defaultValue,
             'units' => $this->defaultUnits,
         ];
+
         // Handle incoming values potentially being JSON or an array
         if (!empty($value)) {
             // Handle a numeric value coming in (perhaps from a Number field)
@@ -138,12 +173,16 @@ class Units extends Number implements PreviewableFieldInterface
                 $config = Json::decodeIfJson($value);
             }
             if (\is_array($value)) {
-                // TODO: why arrayfilter here?
-                $config = array_merge($config, array_filter($value));
+                $config = array_merge($config, $value);
             }
         }
+
         // Create and validate the model
         $unitsData = new UnitsData($config);
+
+        // We don't save field data for this, just get from settings
+        $unitsData->allowedUnits = $this->allowedUnits;
+
         if (!$unitsData->validate()) {
             Craft::error(
                 Craft::t('units', 'UnitsData failed validation: ')
@@ -220,7 +259,6 @@ class Units extends Number implements PreviewableFieldInterface
                     'namespacedId' => $namespacedId,
                     'value' => $value,
                     'model' => $model,
-                    'field' => $this,
                 ]
             );
         }

@@ -41,7 +41,7 @@
                 {{ forms.select({
                     id: id ~ "units",
                     name: name ~ "[units]",
-                    options: craft.units.availableUnits(model.unitsClass),
+                    options: model.allowedUnitsOptions,
                     value: model.units,
                 }) }}
             </div>

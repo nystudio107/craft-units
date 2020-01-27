@@ -12,40 +12,63 @@
 
 /**
  * Fill a dynamic schema.org type menu with the units data
- *
+ *`
  * @param menuId
  * @param menuValue
  * @param unitsClass
  * @param callback
  */
-function fillDynamicUnitsMenu(menuId, menuValue, unitsClass, callback) {
-    var menu = $('#' + menuId);
+function fillUnits($inputs, unitsClass, callback) {
 
-    if (menu.length) {
-        menu.empty();
-        $.ajax({
-                url: Craft.getActionUrl('units/units/available-units?unitsClass=' + unitsClass)
-            })
-            .done(function(data) {
-                var newValue = Object.keys(data)[0];
-                for (var k in data) {
-                    if (data.hasOwnProperty(k)) {
-                        if (k === menuValue) {
-                            newValue = menuValue;
-                        }
-                        $('<option />')
-                            .attr('value', k)
-                            .html(data[k])
-                            .appendTo(menu);
-                    }
-                }
-                menu.val(newValue);
-                if (callback !== undefined) {
-                    callback();
-                }
-            })
-            .fail(function(data) {
-                console.log('Error loading units data');
-            })
+    if (!$inputs.length) {
+        return;
     }
+
+    callback = function(data) {
+        $inputs.each(function() {
+            var $input = $(this);
+            var $inputContainer = $input.parent();
+            var $checkboxesContainer = $inputContainer.parent('.checkbox-select');
+
+            if ($checkboxesContainer.length) {
+                var $allChecked = $input.is(':checked');
+                var $containerModel = $checkboxesContainer.children().eq(1);
+
+                $checkboxesContainer.children().not($inputContainer).remove();
+                $checkboxesContainer.append($.map(data, function(text, value) {
+                    var $container = $containerModel.clone();
+                    var $input = $container.find('input');
+                    var newId = Craft.formatInputId($input.attr('name')) + value;
+
+                    $container.find('label')
+                    .html(text)
+                    .attr('for', newId);
+                    $input
+                    .prop('disabled', $allChecked)
+                    .prop('checked', $allChecked)
+                    .attr('id', newId)
+                    .val(value);
+
+                    return $container;
+                }));
+
+                if ($checkboxesContainer.data('checkboxSelect')) {
+                    $checkboxesContainer.checkboxselect();
+                }
+
+            } else {
+                $input.empty().append($.map(data, function(text, value) {
+                    return '<option value="' + value + '">' + text +  '</option>';
+                }));
+            }
+        });
+    }
+
+    $.ajax({
+        url: Craft.getActionUrl('units/units/available-units?unitsClass=' + unitsClass)
+    })
+    .done(callback)
+    .fail(function(data) {
+        console.log('Error loading units data');
+    });
 }
