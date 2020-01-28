@@ -20,13 +20,14 @@ use craft\i18n\Locale;
 
 use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
 use nystudio107\units\helpers\ClassHelper;
+use nystudio107\units\helpers\UnitsHelper;
 use nystudio107\units\models\Settings;
 use nystudio107\units\models\UnitsData;
 use nystudio107\units\Units as UnitsPlugin;
+
 use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
-
 use yii\base\InvalidConfigException;
 use yii\db\Schema;
 
@@ -54,12 +55,12 @@ class Units extends Number implements PreviewableFieldInterface
     /**
      * @var string The default fully qualified class name of the unit of measure
      */
-    public $defaultUnitsClass;
+    public $unitsClass = Length::class;
 
     /**
      * @var string The default units that the unit of measure is in
      */
-    public $defaultUnits;
+    public $defaultUnits = 'ft';
 
     /**
      * @var bool Whether the units the field can be changed
@@ -82,30 +83,7 @@ class Units extends Number implements PreviewableFieldInterface
         parent::init();
 
         if ($this->allowedUnits === '*') {
-            $this->allowedUnits =  null;
-        }
-
-        if (UnitsPlugin::$plugin !== null) {
-            /** @var Settings $settings */
-            $settings = UnitsPlugin::$plugin->getSettings();
-
-            // TODO: do we really need this?
-            if (!empty($settings)) {
-                $this->defaultUnitsClass = $this->defaultUnitsClass ?? $settings->defaultUnitsClass;
-                $this->defaultUnits = $this->defaultUnits ?? $settings->defaultUnits;
-                $this->changeableUnits = $this->changeableUnits ?? $settings->defaultChangeableUnits;
-                $this->min = $this->min ?? $settings->defaultMin;
-                $this->max = $this->max ?? $settings->defaultMax;
-                $this->decimals = $this->decimals ?? $settings->defaultDecimals;
-
-                if ($this->defaultValue !== null && !$this->defaultValue) {
-                    $this->defaultValue = $settings->defaultValue;
-                }
-
-                if ($this->size !== null && !$this->size) {
-                    $this->size = $settings->defaultSize;
-                }
-            }
+            $this->allowedUnits = null;
         }
     }
 
@@ -135,7 +113,7 @@ class Units extends Number implements PreviewableFieldInterface
     {
         $rules = parent::rules();
         $rules = array_merge($rules, [
-            ['defaultUnitsClass', 'string'],
+            ['unitsClass', 'string'],
             ['defaultUnits', 'string'],
             ['changeableUnits', 'boolean'],
         ]);
@@ -157,21 +135,24 @@ class Units extends Number implements PreviewableFieldInterface
         if ($value instanceof UnitsData || $value === null) {
             return $value;
         }
+
         // Default config
         $config = [
-            'unitsClass' => $this->defaultUnitsClass,
+            'unitsClass' => $this->unitsClass,
             'value' => $this->defaultValue,
             'units' => $this->defaultUnits,
         ];
 
         // Handle incoming values potentially being JSON or an array
         if (!empty($value)) {
+
             // Handle a numeric value coming in (perhaps from a Number field)
             if (\is_numeric($value)) {
                 $config['value'] = $value;
             } elseif (\is_string($value)) {
                 $config = Json::decodeIfJson($value);
             }
+
             if (\is_array($value)) {
                 $config = array_merge($config, $value);
             }
@@ -180,8 +161,8 @@ class Units extends Number implements PreviewableFieldInterface
         // Create and validate the model
         $unitsData = new UnitsData($config);
 
-        // We don't save field data for this, just get from settings
-        $unitsData->allowedUnits = $this->allowedUnits;
+        // Should we?
+        // $unitsData->field = $this;
 
         if (!$unitsData->validate()) {
             Craft::error(
@@ -220,50 +201,42 @@ class Units extends Number implements PreviewableFieldInterface
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        if ($value instanceof UnitsData) {
-            // Register our asset bundle
-            try {
-                Craft::$app->getView()->registerAssetBundle(UnitsFieldAsset::class);
-            } catch (InvalidConfigException $e) {
-                Craft::error($e->getMessage(), __METHOD__);
-            }
-            $model = $value;
-            $value = $model->value;
-            $decimals = $this->decimals;
-            // If decimals is 0 (or null, empty for whatever reason), don't run this
-            if ($decimals) {
-                $decimalSeparator = Craft::$app->getLocale()->getNumberSymbol(Locale::SYMBOL_DECIMAL_SEPARATOR);
-                $value = number_format($value, $decimals, $decimalSeparator, '');
-            }
-            // Get our id and namespace
-            $id = Craft::$app->getView()->formatInputId($this->handle);
-            $namespacedId = Craft::$app->getView()->namespaceInputId($id);
-
-            // Variables to pass down to our field JavaScript to let it namespace properly
-            $jsonVars = [
-                'id' => $id,
-                'name' => $this->handle,
-                'namespace' => $namespacedId,
-                'prefix' => Craft::$app->getView()->namespaceInputId(''),
-            ];
-            $jsonVars = Json::encode($jsonVars);
-            Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(".$jsonVars.");");
-
-            // Render the input template
-            return Craft::$app->getView()->renderTemplate(
-                'units/_components/fields/Units_input',
-                [
-                    'name' => $this->handle,
-                    'field' => $this,
-                    'id' => $id,
-                    'namespacedId' => $namespacedId,
-                    'value' => $value,
-                    'model' => $model,
-                ]
-            );
+        try {
+            Craft::$app->getView()->registerAssetBundle(UnitsFieldAsset::class);
+        } catch (InvalidConfigException $e) {
+            Craft::error($e->getMessage(), __METHOD__);
         }
 
-        return '';
+        // If decimals is 0 (or null, empty for whatever reason), don't run this
+        if ($this->decimals) {
+            $decimalseparator = Craft::$app->getLocale()->getNumberSymbol(Locale::SYMBOL_DECIMAL_SEPARATOR);
+            $value = number_format($value, $this->decimals, $decimalSeparator, '');
+        }
+
+        // Get our id and namespace
+        $id = Craft::$app->getView()->formatInputId($this->handle);
+        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+
+        // Variables to pass down to our field JavaScript to let it namespace properly
+        $jsonVars = Json::encode([
+            'id' => $id,
+            'name' => $this->handle,
+            'namespace' => $namespacedId,
+            'prefix' => Craft::$app->getView()->namespaceInputId(''),
+        ]);
+
+        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(".$jsonVars.");");
+
+        return Craft::$app->getView()->renderTemplate(
+            'units/_components/fields/Units_input',
+            [
+                'name' => $this->handle,
+                'field' => $this,
+                'id' => $id,
+                'namespacedId' => $namespacedId,
+                'value' => $value,
+            ]
+        );
     }
 
     /**
@@ -280,5 +253,45 @@ class Units extends Number implements PreviewableFieldInterface
                 'max' => $this->max,
             ],
         ];
+    }
+
+    /**
+     * Return a filtered array of allowed units
+     *
+     * @param  bool $includeAliases
+     * @return string
+     */
+    public function getAllowedUnits(): array
+    {
+        return array_filter($this->getAvailableUnits(), function ($key) {
+            return $this->allowedUnits === null ? true : in_array($key, $this->allowedUnits);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    public function getAllowedUnitsOptions(): array
+    {
+        $options = $this->getAllowedUnits();
+
+        // TODO: only if not required, or if value not in allowed?
+        // Or add a null option to defaultUnits
+        // array_unshift($options, [
+        //     'label' => Craft::t('units', 'Select One…'),
+        //     'value' => null,
+        // ]);
+
+        return $options;
+    }
+
+    /**
+     * Return the available units for a given AbstractPhysicalQuantity
+     *
+     * @param string $unitsClass
+     * @param bool   $includeAliases whether to include aliases or not
+     *
+     * @return array
+     */
+    public function getAvailableUnits($includeAliases = false): array
+    {
+        return UnitsHelper::getAvailableUnits($this->unitsClass, $includeAliases);
     }
 }
