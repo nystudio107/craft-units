@@ -124,31 +124,4 @@ class Units extends Plugin
             __METHOD__
         );
     }
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    protected function createSettingsModel()
-    {
-        return new Settings();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function settingsHtml(): string
-    {
-        $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
-
-        return Craft::$app->view->renderTemplate(
-            'units/settings',
-            [
-                'settings' => $this->getSettings(),
-                'unitsClassMap' => $unitsClassMap,
-            ]
-        );
-    }
 }
