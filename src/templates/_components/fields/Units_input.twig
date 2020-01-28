@@ -30,7 +30,7 @@
         {{ forms.textField({
             id: id ~ "value",
             name: name ~ "[value]",
-            value: value,
+            value: value.value ?? null,
             size: field.size,
             unit: not field.changeableUnits ? field.defaultUnits
         }) }}
@@ -41,8 +41,8 @@
                 {{ forms.select({
                     id: id ~ "units",
                     name: name ~ "[units]",
-                    options: model.allowedUnitsOptions,
-                    value: model.units,
+                    options: field.getAllowedUnitsOptions(),
+                    value: value.units ?? null,
                 }) }}
             </div>
         {% endif %}

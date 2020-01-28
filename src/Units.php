@@ -19,12 +19,9 @@ use craft\services\Fields;
 use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
 use nystudio107\units\fields\Units as UnitsField;
-use nystudio107\units\helpers\ClassHelper;
-use nystudio107\units\models\Settings;
+use nystudio107\units\models\UnitsData;
+
 use nystudio107\units\variables\UnitsVariable;
-
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
-
 use yii\base\Event;
 
 /**
@@ -68,6 +65,10 @@ class Units extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        // $this->setComponents([
+        //     'unitsData' => UnitsData::class,
+        // ]);
+
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
@@ -81,8 +82,8 @@ class Units extends Plugin
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
             function (Event $event) {
-                /** @var CraftVariable $variable */
                 $variable = $event->sender;
+                // $variable->set('units', $this->unitsData);
                 $variable->set('units', self::$variable);
             }
         );

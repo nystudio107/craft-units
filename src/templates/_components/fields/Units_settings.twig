@@ -21,18 +21,18 @@
 
 {{ forms.selectField({
     label: "Measure Type"|t("units"),
-    id: "defaultUnitsClass",
-    name: "defaultUnitsClass",
+    id: "unitsClass",
+    name: "unitsClass",
     options: unitsClassMap,
-    value: field.defaultUnitsClass,
-    errors: field.getErrors("defaultUnitsClass"),
+    value: field.unitsClass,
+    errors: field.getErrors("unitsClass"),
 }) }}
 
 {{ forms.selectField({
     label: "Default Units"|t("units"),
     id: "defaultUnits",
     name: "defaultUnits",
-    options: craft.units.availableUnits(field.defaultUnitsClass),
+    options: field.getAvailableUnits(),
     value: field.defaultUnits,
     errors: field.getErrors("defaultUnits"),
 }) }}
@@ -42,7 +42,7 @@
     id: "allowedUnits",
     name: "allowedUnits",
     showAllOption: true,
-    options: craft.units.availableUnits(field.defaultUnitsClass),
+    options: field.getAvailableUnits(),
     errors: field.getErrors("allowedUnits"),
     values: field.allowedUnits ?? '*',
 }) }}
@@ -59,9 +59,9 @@
     // Fill in the dynamic unit menu
     var $defaultUnits = $('#{{ "defaultUnits"|namespaceInputId }}');
     var $allowedUnits = $('#{{ "allowedUnits"|namespaceInputId }}');
-    var $defaultUnitsClass = $('#{{ "defaultUnitsClass"|namespaceInputId }}');
+    var $unitsClass = $('#{{ "unitsClass"|namespaceInputId }}');
 
-    $defaultUnitsClass.on('change', function(event) {
+    $unitsClass.on('change', function(event) {
         fillUnits($defaultUnits.add($allowedUnits), event.target.value);
     });
 {% endjs %}

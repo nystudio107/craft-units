@@ -93,11 +93,6 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     public function init()
     {
         parent::init();
-        /** @var Settings $settings */
-        $settings = Units::$plugin->getSettings();
-        $this->unitsClass = $this->unitsClass ?? $settings->defaultUnitsClass;
-        $this->value = $this->value ?? $settings->defaultValue;
-        $this->units = $this->units ?? $settings->defaultUnits;
 
         if ($this->unitsClass !== null && $this->value !== null) {
             $this->unitsInstance = new $this->unitsClass($this->value, $this->units);
@@ -188,52 +183,6 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     {
         /** @var UnitsData $testQuantity */
         return $this->unitsInstance->isEquivalentQuantity($testQuantity->unitsInstance);
-    }
-
-    /**
-     * Return an array of available units
-     *
-     * @param  bool $includeAliases
-     * @return string
-     */
-    public function availableUnits(bool $includeAliases = true)
-    {
-        $availableUnits = [];
-        /** @var AbstractPhysicalQuantity $unitsClass */
-        $units = $this->unitsInstance::getUnitDefinitions();
-        /** @var UnitOfMeasure $unit */
-        foreach ($units as $unit) {
-            $name = $unit->getName();
-            $aliases = $unit->getAliases();
-            $availableUnits[$name] = $includeAliases ? $aliases : $aliases[0] ?? $name;
-        }
-
-        return $availableUnits;
-    }
-
-    /**
-     * Return a filtered array of allowed units
-     *
-     * @param  bool $includeAliases
-     * @return string
-     */
-    public function allowedUnits(bool $includeAliases = true)
-    {
-        return array_filter($this->availableUnits($includeAliases), function ($key) {
-            return $this->allowedUnits === null ? true : in_array($key, $this->allowedUnits);
-        }, ARRAY_FILTER_USE_KEY);
-    }
-
-    public function allowedUnitsOptions(): array
-    {
-        $options = $this->allowedUnits(false);
-
-        array_unshift($options, [
-            'label' => Craft::t('units', 'Select One…'),
-            'value' => null,
-        ]);
-
-        return $options;
     }
 
     /**
