@@ -37,11 +37,6 @@ class Units extends Plugin
     // =========================================================================
 
     /**
-     * @var Units
-     */
-    public static $plugin;
-
-    /**
      * @var UnitsVariable
      */
     public static $variable;
@@ -63,7 +58,6 @@ class Units extends Plugin
     public function init()
     {
         parent::init();
-        self::$plugin = $this;
 
         // $this->setComponents([
         //     'unitsData' => UnitsData::class,
