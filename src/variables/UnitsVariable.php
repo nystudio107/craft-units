@@ -122,6 +122,10 @@ class UnitsVariable
      */
     public function float2parts(float $number, bool $returnUnsigned = false): array
     {
+        // Avoid floating-point issues
+        // TODO: pass precision from prop?
+        $number = number_format($number, 2);
+
         $negative = 1;
         if ($number < 0) {
             $negative = -1;
