@@ -94,9 +94,11 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     {
         parent::init();
 
-        if ($this->unitsClass !== null && $this->value !== null) {
-            $this->unitsInstance = new $this->unitsClass($this->value, $this->units);
+        if (!$this->unitsClass || !is_numeric($this->value)) {
+            // TODO: throw
         }
+
+        $this->unitsInstance = new $this->unitsClass($this->value, $this->units);
     }
 
     /**

@@ -130,9 +130,7 @@ class Units extends Number implements PreviewableFieldInterface
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        $value = parent::normalizeValue($value, $element);
-
-        if ($value instanceof UnitsData || $value === null) {
+        if ($value instanceof UnitsData) {
             return $value;
         }
 
@@ -156,6 +154,16 @@ class Units extends Number implements PreviewableFieldInterface
             if (\is_array($value)) {
                 $config = array_merge($config, $value);
             }
+        }
+
+        // Normalize with parent Number field
+        $config['value'] = parent::normalizeValue($config['value'], $element);
+
+        // TODO: should we instead always return UnitsData?
+        // If we do that, we need to implement isValueEmpty
+        // …which maybe we should already for units of 0?
+        if ($config['value'] === null) {
+            return null;
         }
 
         // Create and validate the model
