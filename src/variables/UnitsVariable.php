@@ -14,7 +14,6 @@ use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\UnitsData;
 
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
-use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 use PhpUnitsOfMeasure\PhysicalQuantity\Acceleration;
 use PhpUnitsOfMeasure\PhysicalQuantity\Angle;
 use PhpUnitsOfMeasure\PhysicalQuantity\Area;
@@ -30,6 +29,7 @@ use PhpUnitsOfMeasure\PhysicalQuantity\Temperature;
 use PhpUnitsOfMeasure\PhysicalQuantity\Time;
 use PhpUnitsOfMeasure\PhysicalQuantity\Velocity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
+use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 
 use PhpUnitsOfMeasure\UnitOfMeasure;
 use yii\base\InvalidArgumentException;
@@ -127,7 +127,7 @@ class UnitsVariable
 
         return [
             (int) $parts[0],
-            (float) ($parts[1] ?? 0),
+            (float) ('.' . ($parts[1] ?? 0)),
         ];
 
         // $negative = 1;
