@@ -216,9 +216,14 @@ class Units extends Number implements PreviewableFieldInterface
         }
 
         // If decimals is 0 (or null, empty for whatever reason), don't run this
-        if ($this->decimals) {
+        if ($value !== null && $this->decimals) {
             $decimalSeparator = Craft::$app->getLocale()->getNumberSymbol(Locale::SYMBOL_DECIMAL_SEPARATOR);
-            $value = number_format($value, $this->decimals, $decimalSeparator, '');
+
+            try {
+                $value->value = number_format($value->value, $this->decimals, $decimalSeparator, '');
+            } catch (\Throwable $e) {
+                // NaN
+            }
         }
 
         // Get our id and namespace
