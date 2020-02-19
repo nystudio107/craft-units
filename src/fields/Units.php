@@ -256,7 +256,7 @@ class Units extends Number implements PreviewableFieldInterface
             [
                 EmbeddedUnitsDataValidator::class,
                 'units' => $this->defaultUnits,
-                'integerOnly' => $this->decimals ? false : true,
+                'integerOnly' => !$this->decimals,
                 'min' => $this->min,
                 'max' => $this->max,
             ],
