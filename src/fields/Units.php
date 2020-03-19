@@ -18,6 +18,7 @@ use craft\fields\Number;
 use craft\helpers\Json;
 use craft\i18n\Locale;
 
+use GraphQL\Type\Definition\Type;
 use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
 use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\helpers\UnitsHelper;
@@ -102,8 +103,8 @@ class Units extends Number implements PreviewableFieldInterface
      */
     public function getContentGqlType()
     {
-        // TODO:
-        // return NumberType::getType();
+        // TODO: GQL
+        return Type::string();
     }
 
     /**
