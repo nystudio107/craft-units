@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2018 nystudio107
  */
 
-namespace nystudio107\units\assetbundles\Units;
+namespace nystudio107\units\assetbundles\units;
 
 use Craft;
 use craft\web\AssetBundle;
