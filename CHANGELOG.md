@@ -1,5 +1,9 @@
 # Units Changelog
 
+## 1.0.4 - 2020-10-27
+### Fixed
+- Fixed Composer 2 compatibility
+
 ## 1.0.3 - 2018-05-16
 ### Changed
 - Handle incoming numeric values from a converted Number field type
