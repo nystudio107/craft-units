@@ -11,32 +11,30 @@
 
 namespace nystudio107\units\fields;
 
-use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
+use Craft;
+use craft\base\ElementInterface;
+use craft\base\PreviewableFieldInterface;
+use craft\fields\Number;
+use craft\helpers\Json;
+use craft\i18n\Locale;
 
+use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
 use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\Settings;
 use nystudio107\units\models\UnitsData;
 use nystudio107\units\Units as UnitsPlugin;
 use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 
-use Craft;
-use craft\base\ElementInterface;
-use craft\base\Field;
-use craft\base\PreviewableFieldInterface;
-use craft\helpers\Json;
-use craft\i18n\Locale;
+use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 use yii\base\InvalidConfigException;
-
-use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 /**
  * @author    nystudio107
  * @package   Units
  * @since     1.0.0
  */
-class Units extends Field implements PreviewableFieldInterface
+class Units extends Number implements PreviewableFieldInterface
 {
     // Static Methods
     // =========================================================================
@@ -58,11 +56,6 @@ class Units extends Field implements PreviewableFieldInterface
     public $defaultUnitsClass;
 
     /**
-     * @var float The default value of the unit of measure
-     */
-    public $defaultValue;
-
-    /**
      * @var string The default units that the unit of measure is in
      */
     public $defaultUnits;
@@ -71,26 +64,6 @@ class Units extends Field implements PreviewableFieldInterface
      * @var bool Whether the units the field can be changed
      */
     public $changeableUnits;
-
-    /**
-     * @var int|float The minimum allowed number
-     */
-    public $min;
-
-    /**
-     * @var int|float|null The maximum allowed number
-     */
-    public $max;
-
-    /**
-     * @var int The number of digits allowed after the decimal point
-     */
-    public $decimals;
-
-    /**
-     * @var int|null The size of the field
-     */
-    public $size;
 
     // Public Methods
     // =========================================================================
@@ -101,18 +74,26 @@ class Units extends Field implements PreviewableFieldInterface
     public function init()
     {
         parent::init();
-        /** @var Settings $settings */
+
         if (UnitsPlugin::$plugin !== null) {
+            /** @var Settings $settings */
             $settings = UnitsPlugin::$plugin->getSettings();
+
             if (!empty($settings)) {
                 $this->defaultUnitsClass = $this->defaultUnitsClass ?? $settings->defaultUnitsClass;
-                $this->defaultValue = $this->defaultValue ?? $settings->defaultValue;
                 $this->defaultUnits = $this->defaultUnits ?? $settings->defaultUnits;
                 $this->changeableUnits = $this->changeableUnits ?? $settings->defaultChangeableUnits;
                 $this->min = $this->min ?? $settings->defaultMin;
                 $this->max = $this->max ?? $settings->defaultMax;
                 $this->decimals = $this->decimals ?? $settings->defaultDecimals;
-                $this->size = $this->size ?? $settings->defaultSize;
+
+                if ($this->defaultValue !== null && !$this->defaultValue) {
+                    $this->defaultValue = $settings->defaultValue;
+                }
+
+                if ($this->size !== null && !$this->size) {
+                    $this->size = $settings->defaultSize;
+                }
             }
         }
     }
@@ -125,22 +106,9 @@ class Units extends Field implements PreviewableFieldInterface
         $rules = parent::rules();
         $rules = array_merge($rules, [
             ['defaultUnitsClass', 'string'],
-            ['defaultValue', 'number'],
             ['defaultUnits', 'string'],
             ['changeableUnits', 'boolean'],
-            [['min', 'max'], 'number'],
-            [['decimals', 'size'], 'integer'],
-            [
-                ['max'],
-                'compare',
-                'compareAttribute' => 'min',
-                'operator' => '>=',
-            ],
         ]);
-
-        if (!$this->decimals) {
-            $rules[] = [['min', 'max'], 'integer'];
-        }
 
         return $rules;
     }
@@ -150,7 +118,9 @@ class Units extends Field implements PreviewableFieldInterface
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        if ($value instanceof UnitsData) {
+        $value = parent::normalizeValue($value, $element);
+
+        if ($value instanceof UnitsData || $value === null) {
             return $value;
         }
         // Default config
@@ -163,16 +133,15 @@ class Units extends Field implements PreviewableFieldInterface
         if (!empty($value)) {
             // Handle a numeric value coming in (perhaps from a Number field)
             if (\is_numeric($value)) {
-                $config['value'] = (float)$value;
+                $config['value'] = $value;
             } elseif (\is_string($value)) {
                 $config = Json::decodeIfJson($value);
             }
             if (\is_array($value)) {
+                // TODO: why arrayfilter here?
                 $config = array_merge($config, array_filter($value));
             }
         }
-        // Typecast it to a float
-        $config['value'] = (float)$config['value'];
         // Create and validate the model
         $unitsData = new UnitsData($config);
         if (!$unitsData->validate()) {
@@ -194,13 +163,17 @@ class Units extends Field implements PreviewableFieldInterface
         $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
 
         // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
+        $html = Craft::$app->getView()->renderTemplate(
             'units/_components/fields/Units_settings',
             [
                 'field' => $this,
                 'unitsClassMap' => $unitsClassMap,
             ]
         );
+
+        $html .=  parent::getSettingsHtml();
+
+        return $html;
     }
 
     /**
