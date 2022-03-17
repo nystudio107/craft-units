@@ -98,7 +98,7 @@ class Units extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         /** @var Settings $settings */
@@ -120,7 +120,7 @@ class Units extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules = array_merge($rules, [
@@ -148,7 +148,7 @@ class Units extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue(mixed $value, ?\craft\base\ElementInterface $element = null): mixed
     {
         if ($value instanceof UnitsData) {
             return $value;
@@ -189,7 +189,7 @@ class Units extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         $unitsClassMap = array_flip(ClassHelper::getClassesInNamespace(Length::class));
 
@@ -206,7 +206,7 @@ class Units extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function getInputHtml($value, ElementInterface $element = null): string
+    public function getInputHtml(mixed $value, ?\craft\base\ElementInterface $element = null): string
     {
         if ($value instanceof UnitsData) {
             // Register our asset bundle

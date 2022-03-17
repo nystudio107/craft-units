@@ -84,7 +84,7 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         /** @var Settings $settings */
@@ -116,7 +116,7 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     /**
      * @inheritdoc
      */
-    public function fields()
+    public function fields(): array
     {
         $fields = parent::fields();
         $fields = array_diff_key(

@@ -29,7 +29,7 @@ class UnitsController extends Controller
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = [
+    protected array|bool|int $allowAnonymous = [
         'all-available-units',
         'available-units',
     ];
