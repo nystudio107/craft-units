@@ -11,6 +11,9 @@
 namespace nystudio107\units\helpers;
 
 use Craft;
+use ReflectionClass;
+use ReflectionException;
+use function dirname;
 
 /**
  * @author    nystudio107
@@ -36,14 +39,14 @@ class ClassHelper
         $loader = include Craft::getAlias('@vendor/autoload.php');
         $filePath = $loader->findFile($className);
         if ($filePath) {
-            $dir = realpath(\dirname($filePath));
+            $dir = realpath(dirname($filePath));
             $classesMap = ClassMapGenerator::createMap($dir);
             foreach ($classesMap as $class => $path) {
                 try {
-                    $reflect = new \ReflectionClass($class);
+                    $reflect = new ReflectionClass($class);
                     $shortName = $reflect->getShortName();
                     $result[$shortName] = $class;
-                } catch (\ReflectionException $e) {
+                } catch (ReflectionException $e) {
                     Craft::error($e->getMessage(), __METHOD__);
                 }
             }
