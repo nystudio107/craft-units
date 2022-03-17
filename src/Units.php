@@ -10,22 +10,18 @@
 
 namespace nystudio107\units;
 
+use Craft;
+use craft\base\Model;
+use craft\base\Plugin;
+use craft\events\RegisterComponentTypesEvent;
+use craft\services\Fields;
+use craft\web\twig\variables\CraftVariable;
 use nystudio107\units\fields\Units as UnitsField;
 use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\Settings;
 use nystudio107\units\variables\UnitsVariable;
-
-use Craft;
-use craft\base\Plugin;
-use craft\events\PluginEvent;
-use craft\events\RegisterComponentTypesEvent;
-use craft\services\Fields;
-use craft\services\Plugins;
-use craft\web\twig\variables\CraftVariable;
-
-use yii\base\Event;
-
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
+use yii\base\Event;
 
 /**
  * Class Units
@@ -57,13 +53,22 @@ class Units extends Plugin
      */
     public string $schemaVersion = '1.0.0';
 
+    /**
+     * @var bool
+     */
+    public bool $hasCpSettings = true;
+    /**
+     * @var bool
+     */
+    public bool $hasCpSection = false;
+
     // Public Methods
     // =========================================================================
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         self::$plugin = $this;
@@ -71,7 +76,7 @@ class Units extends Plugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            static function (RegisterComponentTypesEvent $event) {
                 $event->types[] = UnitsField::class;
             }
         );
@@ -80,7 +85,7 @@ class Units extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            function (Event $event) {
+            static function (Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('units', self::$variable);
@@ -88,22 +93,13 @@ class Units extends Plugin
         );
 
         Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                }
-            }
-        );
-
-        Event::on(
             UnitsField::class,
             'craftQlGetFieldSchema',
-            function ($event) {
+            static function ($event) {
                 $field = $event->sender;
 
                 if (!$field instanceof UnitsField) {
-                  return;
+                    return;
                 }
 
                 $object = $event->schema->createObjectType(ucfirst($field->handle) . 'Units');
@@ -131,7 +127,7 @@ class Units extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel(): ?\craft\base\Model
+    protected function createSettingsModel(): ?Model
     {
         return new Settings();
     }
@@ -146,8 +142,8 @@ class Units extends Plugin
             'units/settings',
             [
                 'settings' => $this->getSettings(),
-                 'unitsClassMap' => $unitsClassMap,
-           ]
+                'unitsClassMap' => $unitsClassMap,
+            ]
         );
     }
 }

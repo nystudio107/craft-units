@@ -10,10 +10,8 @@
 
 namespace nystudio107\units\controllers;
 
-use nystudio107\units\Units;
-
 use craft\web\Controller;
-
+use nystudio107\units\Units;
 use yii\web\Response;
 
 /**
@@ -38,9 +36,9 @@ class UnitsController extends Controller
     // =========================================================================
 
     /**
-     * Return all of the available units as JSON
+     * Return all the available units as JSON
      *
-     * @param bool   $includeAliases whether to include aliases or not
+     * @param bool $includeAliases whether to include aliases or not
      *
      * @return Response
      */
@@ -53,7 +51,7 @@ class UnitsController extends Controller
      * Return the available units for a given AbstractPhysicalQuantity as JSON
      *
      * @param string $unitsClass
-     * @param bool   $includeAliases whether to include aliases or not
+     * @param bool $includeAliases whether to include aliases or not
      *
      * @return Response
      */

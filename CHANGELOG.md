@@ -1,5 +1,11 @@
 # Units Changelog
 
+## 4.0.0-beta.1 - 2022.03.17
+
+### Added
+
+* Initial Craft CMS 4 compatibility
+
 ## 1.0.4 - 2020-10-27
 ### Fixed
 - Fixed Composer 2 compatibility

@@ -11,13 +11,12 @@
 
 namespace nystudio107\units\validators;
 
-use nystudio107\units\models\UnitsData;
-
 use Craft;
-
+use nystudio107\units\models\UnitsData;
 use yii\base\Model;
-use yii\validators\Validator;
 use yii\validators\NumberValidator;
+use yii\validators\Validator;
+use function is_object;
 
 /**
  * @author    nystudio107
@@ -64,7 +63,7 @@ class EmbeddedUnitsDataValidator extends Validator
         /** @var Model $model */
         $value = $model->$attribute;
 
-        if ($value !== null && \is_object($value) && $value instanceof UnitsData) {
+        if ($value !== null && is_object($value) && $value instanceof UnitsData) {
             // Validate the model
             $value->validate();
             // Normalize the min/max value

@@ -11,24 +11,25 @@
 
 namespace nystudio107\units\models;
 
-use nystudio107\units\Units;
-
 use craft\base\Model;
-
-use yii\base\InvalidArgumentException;
-
+use nystudio107\units\Units;
+use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
+use PhpUnitsOfMeasure\Exception\NonNumericValue;
+use PhpUnitsOfMeasure\Exception\NonStringUnitName;
+use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 use PhpUnitsOfMeasure\UnitOfMeasure;
 use PhpUnitsOfMeasure\UnitOfMeasureInterface;
-use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
-use PhpUnitsOfMeasure\PhysicalQuantityInterface;
+use yii\base\InvalidArgumentException;
+use function call_user_func_array;
+use function get_class;
 
 /**
  * @author    nystudio107
  * @package   Units
  * @since     1.0.0
  *
- * @property string         $valueFraction
- * @property array|float[]  $valueParts
+ * @property string $valueFraction
+ * @property array|float[] $valueParts
  * @property array|string[] $valuePartsFraction
  */
 class UnitsData extends Model implements PhysicalQuantityInterface
@@ -39,22 +40,22 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     /**
      * @var string The fully qualified class name of the unit of measure
      */
-    public $unitsClass;
+    public string $unitsClass;
 
     /**
      * @var float The value of the unit of measure
      */
-    public $value;
+    public float $value;
 
     /**
      * @var string The units that the unit of measure is in
      */
-    public $units;
+    public string $units;
 
     /**
      * @var AbstractPhysicalQuantity
      */
-    public $unitsInstance;
+    public AbstractPhysicalQuantity $unitsInstance;
 
     // Public Methods
     // =========================================================================
@@ -64,18 +65,18 @@ class UnitsData extends Model implements PhysicalQuantityInterface
      * class in $unitsInstance, if it exists
      *
      * @param string $method
-     * @param array  $args
+     * @param array $args
      *
      * @return mixed
      * @throws InvalidArgumentException
-     * @throws \PhpUnitsOfMeasure\Exception\NonNumericValue
-     * @throws \PhpUnitsOfMeasure\Exception\NonStringUnitName
+     * @throws NonNumericValue
+     * @throws NonStringUnitName
      */
     public function __call($method, $args)
     {
         $unitsInstance = $this->unitsInstance;
         if (method_exists($unitsInstance, $method)) {
-            return \call_user_func_array([$unitsInstance, $method], $args);
+            return call_user_func_array([$unitsInstance, $method], $args);
         }
 
         throw new InvalidArgumentException("Method {$method} doesn't exist");
@@ -207,10 +208,11 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     {
         return trim(Units::$variable->fraction($this->value) . ' ' . $this->units);
     }
+
     /**
      * Return the measurement as a fraction, in the given unit of measure
      *
-     * @param  UnitOfMeasureInterface|string $unit The desired unit of measure,
+     * @param UnitOfMeasureInterface|string $unit The desired unit of measure,
      *                                             or a string name of one
      *
      * @return string The measurement cast in the requested units, as a
@@ -272,7 +274,7 @@ class UnitsData extends Model implements PhysicalQuantityInterface
      */
     protected function physicalQuantityToUnitsData(PhysicalQuantityInterface $quantity): UnitsData
     {
-        $unitsClass = \get_class($quantity);
+        $unitsClass = get_class($quantity);
         list($value, $units) = explode(' ', (string)$quantity);
         $config = [
             'unitsClass' => $unitsClass,

@@ -10,9 +10,8 @@
 
 namespace nystudio107\units\models;
 
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
-
 use craft\base\Model;
+use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 /**
  * @author    nystudio107
@@ -27,42 +26,42 @@ class Settings extends Model
     /**
      * @var string The default fully qualified class name of the unit of measure
      */
-    public $defaultUnitsClass = Length::class;
+    public string $defaultUnitsClass = Length::class;
 
     /**
      * @var float The default value of the unit of measure
      */
-    public $defaultValue = 0.0;
+    public float $defaultValue = 0.0;
 
     /**
      * @var string The default units that the unit of measure is in
      */
-    public $defaultUnits = 'ft';
+    public string $defaultUnits = 'ft';
 
     /**
      * @var bool Whether the units the field can be changed
      */
-    public $defaultChangeableUnits = true;
+    public bool $defaultChangeableUnits = true;
 
     /**
      * @var int|float The default minimum allowed number
      */
-    public $defaultMin = 0;
+    public int|float $defaultMin = 0;
 
     /**
      * @var int|float|null The default maximum allowed number
      */
-    public $defaultMax;
+    public int|null|float $defaultMax;
 
     /**
      * @var int The default number of digits allowed after the decimal point
      */
-    public $defaultDecimals = 3;
+    public int $defaultDecimals = 3;
 
     /**
      * @var int|null The default size of the field
      */
-    public $defaultSize = 6;
+    public ?int $defaultSize = 6;
 
     // Public Methods
     // =========================================================================
@@ -77,7 +76,7 @@ class Settings extends Model
             ['defaultUnitsClass', 'string'],
             ['defaultUnitsClass', 'default', 'value' => Length::class],
             ['defaultValue', 'number'],
-            ['defaultValue', 'default', 'value' =>  0.0],
+            ['defaultValue', 'default', 'value' => 0.0],
             ['defaultUnits', 'string'],
             ['defaultUnits', 'default', 'value' => 'ft'],
             ['defaultChangeableUnits', 'boolean'],
