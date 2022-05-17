@@ -21,7 +21,7 @@ class ClassMapGenerator
      * Generate a class map file.
      *
      * @param array|string $dirs Directories or a single path to search in
-     * @param string       $file The name of the class map file
+     * @param string $file The name of the class map file
      */
     public static function dump($dirs, $file)
     {
@@ -92,8 +92,14 @@ class ClassMapGenerator
                     $namespace = '';
                     // If there is a namespace, extract it
                     while (isset($tokens[++$i][1])) {
-                        if (\in_array($tokens[$i][0], [T_STRING, T_NS_SEPARATOR], false)) {
-                            $namespace .= $tokens[$i][1];
+                        if (PHP_MAJOR_VERSION >= 8) {
+                            if (\in_array($tokens[$i][0], [T_NAME_QUALIFIED], false)) {
+                                $namespace .= $tokens[$i][1];
+                            }
+                        } else {
+                            if (\in_array($tokens[$i][0], [T_STRING, T_NS_SEPARATOR], false)) {
+                                $namespace .= $tokens[$i][1];
+                            }
                         }
                     }
                     $namespace .= '\\';
@@ -126,7 +132,7 @@ class ClassMapGenerator
                             break;
                         }
                     }
-                    $classes[] = ltrim($namespace.$class, '\\');
+                    $classes[] = ltrim($namespace . $class, '\\');
                     break;
                 default:
                     break;

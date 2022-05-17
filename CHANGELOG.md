@@ -1,5 +1,9 @@
 # Units Changelog
 
+## 1.0.5 - 2022.05.17
+### Fixed
+* Fixed an issue that would cause the field type to be unusable if you were running PHP 8 or later, due to additions in the token parser in PHP 8 ([#40](https://github.com/nystudio107/craft-units/issues/40))
+
 ## 1.0.4 - 2020-10-27
 ### Fixed
 - Fixed Composer 2 compatibility
