@@ -1,46 +1,46 @@
 {
-    "name": "nystudio107/craft-units",
-    "description": "Units is a plugin that can convert between any units of measure, and comes with a Field for content authors to use",
-    "type": "craft-plugin",
-    "version": "1.0.4",
-    "keywords": [
-        "craft",
-        "cms",
-        "craftcms",
-        "craft-plugin",
-        "measurement",
-        "measures",
-        "units",
-        "conversion"
-    ],
-    "support": {
-        "docs": "https://nystudio107.com/plugins/units/documentation",
-        "issues": "https://nystudio107.com/plugins/units/support"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "nystudio107",
-            "homepage": "https://nystudio107.com/"
-        }
-    ],
-    "require": {
-        "craftcms/cms": "^3.0.0",
-        "php-units-of-measure/php-units-of-measure": "^2.1.0"
-    },
-    "autoload": {
-        "psr-4": {
-          "nystudio107\\units\\": "src/"
-        }
-    },
-    "extra": {
-        "name": "Units",
-        "handle": "units",
-        "hasCpSettings": true,
-        "hasCpSection": false,
-        "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft-units/master/CHANGELOG.md",
-        "components": {
-        },
-        "class": "nystudio107\\units\\Units"
+  "name": "nystudio107/craft-units",
+  "description": "Units is a plugin that can convert between any units of measure, and comes with a Field for content authors to use",
+  "type": "craft-plugin",
+  "version": "1.0.5",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "craft-plugin",
+    "measurement",
+    "measures",
+    "units",
+    "conversion"
+  ],
+  "support": {
+    "docs": "https://nystudio107.com/plugins/units/documentation",
+    "issues": "https://nystudio107.com/plugins/units/support"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "nystudio107",
+      "homepage": "https://nystudio107.com/"
     }
+  ],
+  "require": {
+    "craftcms/cms": "^3.0.0",
+    "php-units-of-measure/php-units-of-measure": "^2.1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "nystudio107\\units\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "Units",
+    "handle": "units",
+    "hasCpSettings": true,
+    "hasCpSection": false,
+    "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft-units/master/CHANGELOG.md",
+    "components": {
+    },
+    "class": "nystudio107\\units\\Units"
+  }
 }
