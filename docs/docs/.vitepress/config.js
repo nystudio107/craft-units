@@ -13,9 +13,9 @@ module.exports = {
     docsDir: 'docs/docs',
     docsBranch: 'develop',
     algolia: {
-      appId: '',
-      apiKey: '',
-      indexName: ''
+      appId: 'TVGT09IBL5',
+      apiKey: 'd2d2de61619265d05d80bf26ad24f9b4',
+      indexName: 'nystudio107-units'
     },
     editLinks: true,
     editLinkText: 'Edit this page on GitHub',

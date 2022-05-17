@@ -1,5 +1,12 @@
 # Units Changelog
 
+## 4.0.0 - 2022.05.17
+### Added
+* Initial Craft CMS 4 release
+
+### Fixed
+* Fixed an issue that would cause the field type to be unusable if you were running PHP 8 or later, due to additions in the token parser in PHP 8 ([#40](https://github.com/nystudio107/craft-units/issues/40))
+
 ## 4.0.0-beta.1 - 2022.03.17
 
 ### Added
