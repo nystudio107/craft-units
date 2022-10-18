@@ -51,7 +51,7 @@ class Settings extends Model
     /**
      * @var int|float|null The default maximum allowed number
      */
-    public int|null|float $defaultMax;
+    public int|null|float $defaultMax = null;
 
     /**
      * @var int The default number of digits allowed after the decimal point
