@@ -1,5 +1,9 @@
 # Units Changelog
 
+## 4.0.1 - UNRELEASED
+### Fixed
+* Fixed an issue that through a Typed Property Error exception when creating a Units field ([#41](https://github.com/nystudio107/craft-units/issues/41))
+
 ## 4.0.0 - 2022.05.17
 ### Added
 * Initial Craft CMS 4 release
