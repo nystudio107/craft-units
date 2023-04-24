@@ -1,6 +1,10 @@
 # Units Changelog
 
 ## 4.0.1 - UNRELEASED
+### Changed
+* Updated the docs to use VitePress `^1.0.0-alpha.29`
+* Allow for versioning of the docs
+
 ### Fixed
 * Fixed an issue that through a Typed Property Error exception when creating a Units field ([#41](https://github.com/nystudio107/craft-units/issues/41))
 
