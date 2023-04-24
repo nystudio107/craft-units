@@ -1,6 +1,6 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nystudio107/craft-units/badges/quality-score.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-units/?branch=v1) [![Code Coverage](https://scrutinizer-ci.com/g/nystudio107/craft-units/badges/coverage.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-units/?branch=v1) [![Build Status](https://scrutinizer-ci.com/g/nystudio107/craft-units/badges/build.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-units/build-status/v1) [![Code Intelligence Status](https://scrutinizer-ci.com/g/nystudio107/craft-units/badges/code-intelligence.svg?b=v1)](https://scrutinizer-ci.com/code-intelligence)
 
-# Units plugin for Craft CMS 3.x
+# Units plugin for Craft CMS  3.x
 
 Units is a plugin that can convert between any units of measure, and comes with a Field for content authors to use.
 
