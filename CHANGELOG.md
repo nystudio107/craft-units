@@ -7,6 +7,7 @@
 
 ### Fixed
 * Fixed an issue that through a Typed Property Error exception when creating a Units field ([#41](https://github.com/nystudio107/craft-units/issues/41))
+* Add `allow-plugins` to `composer.json` to fix CI
 
 ## 4.0.0 - 2022.05.17
 ### Added
