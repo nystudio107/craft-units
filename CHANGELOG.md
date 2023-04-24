@@ -1,6 +1,6 @@
 # Units Changelog
 
-## 1.0.6 - UNRELEASED
+## 1.0.6 - 2023.04.24
 ### Changed
 * Updated the docs to use VitePress `^1.0.0-alpha.29`
 * Allow for versioning of the docs
