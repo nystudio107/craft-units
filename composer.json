@@ -28,12 +28,26 @@
     "craftcms/cms": "^3.0.0",
     "php-units-of-measure/php-units-of-measure": "^2.1.0"
   },
+  "require-dev": {
+    "craftcms/ecs": "dev-main",
+    "craftcms/phpstan": "dev-main",
+    "craftcms/rector": "dev-main"
+  },
+  "scripts": {
+    "phpstan": "phpstan --ansi --memory-limit=1G",
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --fix --ansi"
+  },
   "config": {
     "allow-plugins": {
       "craftcms/plugin-installer": true,
       "yiisoft/yii2-composer": true
     },
     "optimize-autoloader": true,
+    "platform": {
+      "php": "7.2.5"
+    },
+    "platform-check": false,
     "sort-packages": true
   },
   "autoload": {
