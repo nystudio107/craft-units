@@ -104,7 +104,7 @@ class EmbeddedUnitsDataValidator extends Validator
     {
         $config = [
             'unitsClass' => $unitsData->unitsClass,
-            'units' => $this->units
+            'units' => $this->units,
         ];
         // Normalize the min
         if (!empty($this->min)) {

@@ -86,7 +86,7 @@ class Settings extends Model
                 ['defaultMax'],
                 'compare',
                 'compareAttribute' => 'defaultMin',
-                'operator' => '>='
+                'operator' => '>=',
             ],
             ['defaultMin', 'default', 'value' => 0],
             ['defaultMax', 'default', 'value' => null],

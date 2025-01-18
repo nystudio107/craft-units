@@ -76,7 +76,7 @@ class Units extends Plugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            static function (RegisterComponentTypesEvent $event) {
+            static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = UnitsField::class;
             }
         );
@@ -85,7 +85,7 @@ class Units extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            static function (Event $event) {
+            static function(Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('units', self::$variable);
@@ -95,7 +95,7 @@ class Units extends Plugin
         Event::on(
             UnitsField::class,
             'craftQlGetFieldSchema',
-            static function ($event) {
+            static function($event) {
                 $field = $event->sender;
 
                 if (!$field instanceof UnitsField) {
