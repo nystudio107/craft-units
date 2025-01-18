@@ -10,9 +10,9 @@
 
 namespace nystudio107\units\models;
 
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
-
 use craft\base\Model;
+
+use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 /**
  * @author    nystudio107
@@ -77,7 +77,7 @@ class Settings extends Model
             ['defaultUnitsClass', 'string'],
             ['defaultUnitsClass', 'default', 'value' => Length::class],
             ['defaultValue', 'number'],
-            ['defaultValue', 'default', 'value' =>  0.0],
+            ['defaultValue', 'default', 'value' => 0.0],
             ['defaultUnits', 'string'],
             ['defaultUnits', 'default', 'value' => 'ft'],
             ['defaultChangeableUnits', 'boolean'],
@@ -87,7 +87,7 @@ class Settings extends Model
                 ['defaultMax'],
                 'compare',
                 'compareAttribute' => 'defaultMin',
-                'operator' => '>='
+                'operator' => '>=',
             ],
             ['defaultMin', 'default', 'value' => 0],
             ['defaultMax', 'default', 'value' => null],

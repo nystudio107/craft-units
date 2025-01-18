@@ -10,7 +10,6 @@
 
 namespace nystudio107\units\assetbundles\unitsfield;
 
-use Craft;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 

@@ -11,16 +11,16 @@
 
 namespace nystudio107\units\models;
 
-use nystudio107\units\Units;
-
 use craft\base\Model;
 
-use yii\base\InvalidArgumentException;
+use nystudio107\units\Units;
 
+use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
+
+use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 use PhpUnitsOfMeasure\UnitOfMeasure;
 use PhpUnitsOfMeasure\UnitOfMeasureInterface;
-use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
-use PhpUnitsOfMeasure\PhysicalQuantityInterface;
+use yii\base\InvalidArgumentException;
 
 /**
  * @author    nystudio107

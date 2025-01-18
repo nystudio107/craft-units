@@ -10,9 +10,9 @@
 
 namespace nystudio107\units\controllers;
 
-use nystudio107\units\Units;
-
 use craft\web\Controller;
+
+use nystudio107\units\Units;
 
 use yii\web\Response;
 

@@ -11,25 +11,24 @@
 
 namespace nystudio107\units\fields;
 
-use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
-
-use nystudio107\units\helpers\ClassHelper;
-use nystudio107\units\models\Settings;
-use nystudio107\units\models\UnitsData;
-use nystudio107\units\Units as UnitsPlugin;
-use nystudio107\units\validators\EmbeddedUnitsDataValidator;
-
 use Craft;
+
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\PreviewableFieldInterface;
 use craft\helpers\Json;
 use craft\i18n\Locale;
 
-use yii\base\InvalidConfigException;
+use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
+use nystudio107\units\helpers\ClassHelper;
+use nystudio107\units\models\Settings;
+use nystudio107\units\models\UnitsData;
+use nystudio107\units\Units as UnitsPlugin;
+use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 
-use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
+
+use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
@@ -178,7 +177,7 @@ class Units extends Field implements PreviewableFieldInterface
         if (!$unitsData->validate()) {
             Craft::error(
                 Craft::t('units', 'UnitsData failed validation: ')
-                .print_r($unitsData->getErrors(), true),
+                . print_r($unitsData->getErrors(), true),
                 __METHOD__
             );
         }
@@ -235,7 +234,7 @@ class Units extends Field implements PreviewableFieldInterface
                 'prefix' => Craft::$app->getView()->namespaceInputId(''),
             ];
             $jsonVars = Json::encode($jsonVars);
-            Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(".$jsonVars.");");
+            Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(" . $jsonVars . ");");
 
             // Render the input template
             return Craft::$app->getView()->renderTemplate(

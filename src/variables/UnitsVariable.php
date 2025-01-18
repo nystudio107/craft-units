@@ -14,7 +14,6 @@ use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\UnitsData;
 
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
-use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 use PhpUnitsOfMeasure\PhysicalQuantity\Acceleration;
 use PhpUnitsOfMeasure\PhysicalQuantity\Angle;
 use PhpUnitsOfMeasure\PhysicalQuantity\Area;
@@ -87,7 +86,7 @@ class UnitsVariable
         if (isset($this->unitsClassMap[$unitsClassKey])) {
             list($value, $units) = $args;
             $config = [
-                'unitsClass' =>$this->unitsClassMap[$unitsClassKey],
+                'unitsClass' => $this->unitsClassMap[$unitsClassKey],
                 'value' => $value,
                 'units' => $units,
             ];
@@ -109,7 +108,7 @@ class UnitsVariable
     {
         list($whole, $decimal) = $this->float2parts($value);
 
-        return $whole.' '.$this->float2ratio($decimal);
+        return $whole . ' ' . $this->float2ratio($decimal);
     }
 
     /**

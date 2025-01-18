@@ -11,13 +11,13 @@
 
 namespace nystudio107\units\validators;
 
-use nystudio107\units\models\UnitsData;
-
 use Craft;
 
+use nystudio107\units\models\UnitsData;
+
 use yii\base\Model;
-use yii\validators\Validator;
 use yii\validators\NumberValidator;
+use yii\validators\Validator;
 
 /**
  * @author    nystudio107
@@ -105,7 +105,7 @@ class EmbeddedUnitsDataValidator extends Validator
     {
         $config = [
             'unitsClass' => $unitsData->unitsClass,
-            'units' => $this->units
+            'units' => $this->units,
         ];
         // Normalize the min
         if (!empty($this->min)) {

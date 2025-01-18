@@ -34,5 +34,5 @@ return [
     'UnitsData failed validation: ' => 'UnitsData failed validation: ',
     'Default Decimal Points' => 'Default Decimal Points',
     'Default Units' => 'Default Units',
-    'Default settings for newly created Units fields' => 'Default settings for newly created Units fields'
+    'Default settings for newly created Units fields' => 'Default settings for newly created Units fields',
 ];
