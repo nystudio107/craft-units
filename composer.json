@@ -16,7 +16,7 @@
   "support": {
     "docs": "https://nystudio107.com/docs/units/",
     "issues": "https://nystudio107.com/plugins/units/support",
-    "source": "https://github.com/nystudio107/craft-typogrify"
+    "source": "https://github.com/nystudio107/craft-units"
   },
   "license": "MIT",
   "authors": [
