@@ -12,12 +12,11 @@
 namespace nystudio107\units\validators;
 
 use Craft;
-
 use nystudio107\units\models\UnitsData;
-
 use yii\base\Model;
 use yii\validators\NumberValidator;
 use yii\validators\Validator;
+use function is_object;
 
 /**
  * @author    nystudio107
@@ -40,18 +39,18 @@ class EmbeddedUnitsDataValidator extends Validator
      */
     public $integerOnly = false;
     /**
-     * @var int|float upper limit of the number. Defaults to null, meaning no
+     * @var int|float|null upper limit of the number. Defaults to null, meaning no
      *      upper limit.
      * @see tooBig for the customized message used when the number is too big.
      */
-    public $max;
+    public $max = null;
     /**
-     * @var int|float lower limit of the number. Defaults to null, meaning no
+     * @var int|float|null lower limit of the number. Defaults to null, meaning no
      *      lower limit.
      * @see tooSmall for the customized message used when the number is too
      *      small.
      */
-    public $min;
+    public $min = null;
 
     // Public Methods
     // =========================================================================
@@ -64,7 +63,7 @@ class EmbeddedUnitsDataValidator extends Validator
         /** @var Model $model */
         $value = $model->$attribute;
 
-        if ($value !== null && \is_object($value) && $value instanceof UnitsData) {
+        if ($value !== null && is_object($value) && $value instanceof UnitsData) {
             // Validate the model
             $value->validate();
             // Normalize the min/max value
