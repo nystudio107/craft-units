@@ -1,5 +1,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nystudio107/craft-units/badges/quality-score.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-units/?branch=v1) [![Code Coverage](https://scrutinizer-ci.com/g/nystudio107/craft-units/badges/coverage.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-units/?branch=v1) [![Build Status](https://scrutinizer-ci.com/g/nystudio107/craft-units/badges/build.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-units/build-status/v1) [![Code Intelligence Status](https://scrutinizer-ci.com/g/nystudio107/craft-units/badges/code-intelligence.svg?b=v1)](https://scrutinizer-ci.com/code-intelligence)
 
+<!-- textlint-disable en-capitalization -->
+
 # Units plugin for Craft CMS  3.x
 
 Units is a plugin that can convert between any units of measure, and comes with a Field for content authors to use.
@@ -36,7 +38,7 @@ It also has helper functions to output values as fractions, get the parts of a v
 
 ## Configuring Units
 
-You don't have to do any configuration to use Units, but there are Settings available that allow you to set the default values to use for new Units fields, should you wish to do so:
+You don’t have to do any configuration to use Units, but there are Settings available that allow you to set the default values to use for new Units fields, should you wish to do so:
 
 ![Screenshot](./resources/screenshots/units-settings.png)
 
@@ -69,7 +71,7 @@ If the Units Changeable lightswitch is **on**, the field will appear like this:
 
 ![Screenshot](./resources/screenshots/units-field-units-changeable.png)
 
-If the content author does change the units the field is denominated in, Units will normalize the value to ensure that it's compared against the **Defaults Units** that the **Min Value** and **Max Value** are set to.
+If the content author does change the units the field is denominated in, Units will normalize the value to ensure that it’s compared against the **Defaults Units** that the **Min Value** and **Max Value** are set to.
 
 ### Templating
 
@@ -81,7 +83,7 @@ To create a new unit of measure, you do:
 {% set unitOfMeasure = craft.units.length(10.0, 'meters') %}
 ```
 
-The string after the `craft.units.` determines the type of physical quantity for the unit of measure. The first parameter is the value to assign to the unit of measure, and the second parameter is the unit that it's denominated in.
+The string after the `craft.units.` determines the type of physical quantity for the unit of measure. The first parameter is the value to assign to the unit of measure, and the second parameter is the unit that it’s denominated in.
 
 The following physical quantities are available:
 * **Acceleration** - `{% set unitOfMeasure = craft.units.acceleration(10.0, 'm/s²') %}`
@@ -215,7 +217,7 @@ Output:
 10 1/3
 ```
 
-**N.B.:** if you'd like to convert the text of the fractions to actual unicode fraction characters, you can use the [Typogrify](https://github.com/nystudio107/craft-typogrify) plugin to do that for you.
+**N.B.:** if you’d like to convert the text of the fractions to actual unicode fraction characters, you can use the [Typogrify](https://github.com/nystudio107/craft-typogrify) plugin to do that for you.
 
 #### Converting Values in Decimal
 
@@ -261,7 +263,7 @@ Output:
 33 1/3
 ```
 
-**N.B.:** if you'd like to convert the text of the fractions to actual unicode fraction characters, you can use the [Typogrify](https://github.com/nystudio107/craft-typogrify) plugin to do that for you.
+**N.B.:** if you’d like to convert the text of the fractions to actual unicode fraction characters, you can use the [Typogrify](https://github.com/nystudio107/craft-typogrify) plugin to do that for you.
 
 **N.B.:** For a complete list of all of the available units (and their aliases) for each physical quantity, see the **Units Reference** section.
 
@@ -347,7 +349,7 @@ Output:
 1/3
 ```
 
-**N.B.:** if you'd like to convert the text of the fractions to actual unicode fraction characters, you can use the [Typogrify](https://github.com/nystudio107/craft-typogrify) plugin to do that for you.
+**N.B.:** if you’d like to convert the text of the fractions to actual unicode fraction characters, you can use the [Typogrify](https://github.com/nystudio107/craft-typogrify) plugin to do that for you.
 
 ##### Getting Available Units
 
@@ -1160,7 +1162,7 @@ The first item in the units list is the unit itself, and any sub-list items are 
 * Zg
    * zettagram
    * zettagrams
-* Eg
+* For example
    * exagram
    * exagrams
 * Pg
