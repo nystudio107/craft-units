@@ -3,7 +3,7 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: 'Units Plugin',
   description: 'Documentation for the Units plugin',
-  base: '/docs/units/v4/',
+  base: '/docs/units/',
   lang: 'en-US',
   head: [
     ['meta', {content: 'https://github.com/nystudio107', property: 'og:see_also',}],
@@ -18,7 +18,7 @@ export default defineConfig({
     ],
     logo: '/img/plugin-logo.svg',
     editLink: {
-      pattern: 'https://github.com/nystudio107/craft-units/edit/develop-v4/docs/docs/:path',
+      pattern: 'https://github.com/nystudio107/craft-units/edit/develop-v5/docs/docs/:path',
       text: 'Edit this page on GitHub'
     },
     algolia: {
@@ -26,7 +26,7 @@ export default defineConfig({
       apiKey: 'd2d2de61619265d05d80bf26ad24f9b4',
       indexName: 'nystudio107-units',
       searchParameters: {
-        facetFilters: ["version:v4"],
+        facetFilters: ["version:v5"],
       },
     },
     lastUpdatedText: 'Last Updated',
@@ -37,9 +37,9 @@ export default defineConfig({
       {text: 'Changelog', link: 'https://nystudio107.com/plugins/units/changelog'},
       {text: 'Issues', link: 'https://github.com/nystudio107/craft-units/issues'},
       {
-        text: 'v4', items: [
-          {text: 'v5', link: 'https://nystudio107.com/docs/units/'},
-          {text: 'v4', link: '/'},
+        text: '54', items: [
+          {text: 'v5', link: '/'},
+          {text: 'v4', link: 'https://nystudio107.com/docs/units/v4/'},
           {text: 'v1', link: 'https://nystudio107.com/docs/units/v1/'},
         ],
       },
