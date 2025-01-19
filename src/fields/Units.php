@@ -84,6 +84,14 @@ class Units extends Field implements PreviewableFieldInterface
         return Craft::t('units', 'Units');
     }
 
+    /**
+     * @inheritdoc
+     */
+    public static function icon(): string
+    {
+        return 'scale-balanced';
+    }
+
     // Public Methods
     // =========================================================================
 
