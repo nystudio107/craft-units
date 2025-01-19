@@ -38,19 +38,19 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     // =========================================================================
 
     /**
-     * @var string The fully qualified class name of the unit of measure
+     * @var ?string The fully qualified class name of the unit of measure
      */
-    public string $unitsClass;
+    public ?string $unitsClass = null;
 
     /**
-     * @var float The value of the unit of measure
+     * @var ?float The value of the unit of measure
      */
-    public float $value;
+    public ?float $value = null;
 
     /**
-     * @var string The units that the unit of measure is in
+     * @var ?string The units that the unit of measure is in
      */
-    public string $units;
+    public ?string $units = null;
 
     /**
      * @var AbstractPhysicalQuantity
@@ -187,7 +187,6 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     public function availableUnits(bool $includeAliases = true)
     {
         $availableUnits = [];
-        /** @var AbstractPhysicalQuantity $unitsClass */
         $units = $this->unitsInstance::getUnitDefinitions();
         /** @var UnitOfMeasure $unit */
         foreach ($units as $unit) {

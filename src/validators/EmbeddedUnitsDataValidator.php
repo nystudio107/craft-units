@@ -39,18 +39,18 @@ class EmbeddedUnitsDataValidator extends Validator
      */
     public $integerOnly = false;
     /**
-     * @var int|float upper limit of the number. Defaults to null, meaning no
+     * @var int|float|null upper limit of the number. Defaults to null, meaning no
      *      upper limit.
      * @see tooBig for the customized message used when the number is too big.
      */
-    public $max;
+    public $max = null;
     /**
-     * @var int|float lower limit of the number. Defaults to null, meaning no
+     * @var int|float|null lower limit of the number. Defaults to null, meaning no
      *      lower limit.
      * @see tooSmall for the customized message used when the number is too
      *      small.
      */
-    public $min;
+    public $min = null;
 
     // Public Methods
     // =========================================================================
