@@ -1,5 +1,9 @@
 # Units Changelog
 
+## 1.0.7 - UNRELEASED
+### Added
+* Add `ecs` and `phpstan` code quality tools
+
 ## 1.0.6 - 2023.04.24
 ### Changed
 * Updated the docs to use VitePress `^1.0.0-alpha.29`
