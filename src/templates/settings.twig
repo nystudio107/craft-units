@@ -1,12 +1,12 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
 {#
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * Units Settings.twig
  *
  * @author    nystudio107
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  * @link      https://nystudio107.com/
  * @package   Units
  * @since     1.0.0
@@ -101,8 +101,8 @@
 </div>
 
 {% js %}
-    // Fill in the dynamic unit menu
-    var defaultUnitsId = '{{ "defaultUnits" |namespaceInputId }}';
+// Fill in the dynamic unit menu
+var defaultUnitsId = '{{ "defaultUnits" |namespaceInputId }}';
     var defaultUnitsClassId = '{{ "defaultUnitsClass" |namespaceInputId }}';
 
     $('#'+defaultUnitsClassId).on('change', function(e) {
