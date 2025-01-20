@@ -3,6 +3,7 @@
 ## 1.0.7 - UNRELEASED
 ### Added
 * Add `ecs` and `phpstan` code quality tools
+* Add a GraphQL interface for Units fields, closes ([#5](https://github.com/nystudio107/craft-units/issues/5))
 
 ## 1.0.6 - 2023.04.24
 ### Changed
