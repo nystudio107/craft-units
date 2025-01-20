@@ -7,7 +7,7 @@
  * Units Field Settings
  *
  * @author    nystudio107
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  * @link      https://nystudio107.com/
  * @package   Units
  * @since     1.0.0
@@ -92,8 +92,8 @@
 
 
 {% js %}
-    // Fill in the dynamic unit menu
-    var defaultUnitsId = '{{ "defaultUnits" |namespaceInputId }}';
+// Fill in the dynamic unit menu
+var defaultUnitsId = '{{ "defaultUnits" |namespaceInputId }}';
     var defaultUnitsClassId = '{{ "defaultUnitsClass" |namespaceInputId }}';
 
     $('#'+defaultUnitsClassId).on('change', function(e) {

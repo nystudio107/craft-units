@@ -3,12 +3,12 @@
 {# @var field \nystudio107\units\fields\Units #}
 {#
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * Units Field Input
  *
  * @author    nystudio107
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  * @link      https://nystudio107.com/
  * @package   Units
  * @since     1.0.0
@@ -29,12 +29,12 @@
 
 {% if field.changeableUnits %}
     <div class="field units-field-units-select">
-    {{ forms.select({
-        id: id ~ "units",
-        name: name ~ "[units]",
-        options: craft.units.availableUnits(model.unitsClass),
-        value: model.units,
-    }) }}
+        {{ forms.select({
+            id: id ~ "units",
+            name: name ~ "[units]",
+            options: craft.units.availableUnits(model.unitsClass),
+            value: model.units,
+        }) }}
     </div>
 {% else %}
     <div class="field units-field-units">
