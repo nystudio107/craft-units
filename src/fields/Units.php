@@ -18,7 +18,9 @@ use craft\base\PreviewableFieldInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\i18n\Locale;
+use GraphQL\Type\Definition\Type;
 use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
+use nystudio107\units\gql\types\generators\UnitsDataGenerator;
 use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\Settings;
 use nystudio107\units\models\UnitsData;
@@ -26,9 +28,6 @@ use nystudio107\units\Units as UnitsPlugin;
 use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 use yii\base\InvalidConfigException;
-use function is_array;
-use function is_numeric;
-use function is_string;
 
 /**
  * @author    nystudio107
@@ -252,6 +251,20 @@ class Units extends Field implements PreviewableFieldInterface
         }
 
         return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContentGqlType(): Type|array
+    {
+        $typeArray = UnitsDataGenerator::generateTypes($this);
+
+        return [
+            'name' => $this->handle,
+            'description' => 'Units field',
+            'type' => array_shift($typeArray),
+        ];
     }
 
     /**
