@@ -408,6 +408,49 @@ The `false` parameter causes it to just list the units, and none of their aliase
 
 In this loop, `aliases` will be an array of aliases for a given unit (if any).
 
+## GraphQL Interface
+
+You can use GraphQL to query Units fields, with an API analogous to the Twig API. In the example below, `someUnits` is the field handle to a Units field:
+
+```graphql
+{
+  entries(section: "homepage") {
+    ... on homepage_Entry {
+      someUnits {
+        value
+        units
+        toString
+        toUnit(unit: "m")
+        toFraction
+        toUnitFraction(unit: "m")
+        getValueFraction
+      }
+    }
+  }
+}
+```
+...will return:
+
+```json
+{
+  "data": {
+    "entries": [
+      {
+        "someUnits": {
+          "value": "12.5",
+          "units": "ft",
+          "toString": "12.5 ft",
+          "toUnit": "3.81",
+          "toFraction": "12 1/2 ft",
+          "toUnitFraction": "3 81/100",
+          "getValueFraction": "12 1/2"
+        }
+      }
+    ]
+  }
+}
+```
+
 ## Units Reference
 
 Units uses the [PHP Units of Measure](https://github.com/PhpUnitsOfMeasure/php-units-of-measure) library, so it offers quite a bit of flexibility.
