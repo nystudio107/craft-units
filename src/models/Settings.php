@@ -1,18 +1,17 @@
 <?php
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * A plugin for handling physical quantities and the units of measure in which they're represented.
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  */
 
 namespace nystudio107\units\models;
 
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
-
 use craft\base\Model;
+use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
 /**
  * @author    nystudio107
@@ -77,7 +76,7 @@ class Settings extends Model
             ['defaultUnitsClass', 'string'],
             ['defaultUnitsClass', 'default', 'value' => Length::class],
             ['defaultValue', 'number'],
-            ['defaultValue', 'default', 'value' =>  0.0],
+            ['defaultValue', 'default', 'value' => 0.0],
             ['defaultUnits', 'string'],
             ['defaultUnits', 'default', 'value' => 'ft'],
             ['defaultChangeableUnits', 'boolean'],
@@ -87,7 +86,7 @@ class Settings extends Model
                 ['defaultMax'],
                 'compare',
                 'compareAttribute' => 'defaultMin',
-                'operator' => '>='
+                'operator' => '>=',
             ],
             ['defaultMin', 'default', 'value' => 0],
             ['defaultMax', 'default', 'value' => null],

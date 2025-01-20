@@ -1,20 +1,18 @@
 <?php
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * A plugin for handling physical quantities and the units of measure in which they're represented.
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  */
 
 namespace nystudio107\units\variables;
 
 use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\UnitsData;
-
 use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
-use PhpUnitsOfMeasure\PhysicalQuantityInterface;
 use PhpUnitsOfMeasure\PhysicalQuantity\Acceleration;
 use PhpUnitsOfMeasure\PhysicalQuantity\Angle;
 use PhpUnitsOfMeasure\PhysicalQuantity\Area;
@@ -30,7 +28,6 @@ use PhpUnitsOfMeasure\PhysicalQuantity\Temperature;
 use PhpUnitsOfMeasure\PhysicalQuantity\Time;
 use PhpUnitsOfMeasure\PhysicalQuantity\Velocity;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
-
 use PhpUnitsOfMeasure\UnitOfMeasure;
 use yii\base\InvalidArgumentException;
 
@@ -87,7 +84,7 @@ class UnitsVariable
         if (isset($this->unitsClassMap[$unitsClassKey])) {
             list($value, $units) = $args;
             $config = [
-                'unitsClass' =>$this->unitsClassMap[$unitsClassKey],
+                'unitsClass' => $this->unitsClassMap[$unitsClassKey],
                 'value' => $value,
                 'units' => $units,
             ];
@@ -109,14 +106,14 @@ class UnitsVariable
     {
         list($whole, $decimal) = $this->float2parts($value);
 
-        return $whole.' '.$this->float2ratio($decimal);
+        return $whole . ' ' . $this->float2ratio($decimal);
     }
 
     /**
      * Convert a floating point number to the whole and the decimal
      *
      * @param float $number
-     * @param bool  $returnUnsigned
+     * @param bool $returnUnsigned
      *
      * @return array
      */
@@ -177,7 +174,7 @@ class UnitsVariable
     /**
      * Return all of the available units
      *
-     * @param bool   $includeAliases whether to include aliases or not
+     * @param bool $includeAliases whether to include aliases or not
      *
      * @return array
      */
@@ -198,7 +195,7 @@ class UnitsVariable
      * Return the available units for a given AbstractPhysicalQuantity
      *
      * @param string $unitsClass
-     * @param bool   $includeAliases whether to include aliases or not
+     * @param bool $includeAliases whether to include aliases or not
      *
      * @return array
      */

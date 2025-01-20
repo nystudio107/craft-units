@@ -3,7 +3,7 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: 'Units Plugin',
   description: 'Documentation for the Units plugin',
-  base: '/docs/units/v3/',
+  base: '/docs/units/v1/',
   lang: 'en-US',
   head: [
     ['meta', {content: 'https://github.com/nystudio107', property: 'og:see_also',}],
@@ -24,7 +24,10 @@ export default defineConfig({
     algolia: {
       appId: 'TVGT09IBL5',
       apiKey: 'd2d2de61619265d05d80bf26ad24f9b4',
-      indexName: 'nystudio107-units'
+      indexName: 'nystudio107-units',
+      searchParameters: {
+        facetFilters: ["version:v1"],
+      },
     },
     lastUpdatedText: 'Last Updated',
     sidebar: [],
@@ -34,9 +37,10 @@ export default defineConfig({
       {text: 'Changelog', link: 'https://nystudio107.com/plugins/units/changelog'},
       {text: 'Issues', link: 'https://github.com/nystudio107/craft-units/issues'},
       {
-        text: 'v3', items: [
-          {text: 'v4', link: 'https://nystudio107.com/docs/units/'},
-          {text: 'v3', link: '/'},
+        text: 'v1', items: [
+          {text: 'v5', link: 'https://nystudio107.com/docs/units/'},
+          {text: 'v4', link: 'https://nystudio107.com/docs/units/v4/'},
+          {text: 'v1', link: '/'},
         ],
       },
     ]

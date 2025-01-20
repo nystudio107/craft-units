@@ -1,19 +1,17 @@
 <?php
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * A plugin for handling physical quantities and the units of measure in which they're represented.
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  */
 
 namespace nystudio107\units\controllers;
 
-use nystudio107\units\Units;
-
 use craft\web\Controller;
-
+use nystudio107\units\Units;
 use yii\web\Response;
 
 /**
@@ -40,7 +38,7 @@ class UnitsController extends Controller
     /**
      * Return all of the available units as JSON
      *
-     * @param bool   $includeAliases whether to include aliases or not
+     * @param bool $includeAliases whether to include aliases or not
      *
      * @return Response
      */
@@ -53,7 +51,7 @@ class UnitsController extends Controller
      * Return the available units for a given AbstractPhysicalQuantity as JSON
      *
      * @param string $unitsClass
-     * @param bool   $includeAliases whether to include aliases or not
+     * @param bool $includeAliases whether to include aliases or not
      *
      * @return Response
      */

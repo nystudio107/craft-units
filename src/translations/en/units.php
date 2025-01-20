@@ -1,11 +1,11 @@
 <?php
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * A plugin for handling physical quantities and the units of measure in which they're represented.
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  */
 
 /**
@@ -34,5 +34,5 @@ return [
     'UnitsData failed validation: ' => 'UnitsData failed validation: ',
     'Default Decimal Points' => 'Default Decimal Points',
     'Default Units' => 'Default Units',
-    'Default settings for newly created Units fields' => 'Default settings for newly created Units fields'
+    'Default settings for newly created Units fields' => 'Default settings for newly created Units fields',
 ];

@@ -1,23 +1,15 @@
 <?php
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * A plugin for handling physical quantities and the units of measure in which
  * they're represented.
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  */
 
 namespace nystudio107\units\fields;
-
-use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
-
-use nystudio107\units\helpers\ClassHelper;
-use nystudio107\units\models\Settings;
-use nystudio107\units\models\UnitsData;
-use nystudio107\units\Units as UnitsPlugin;
-use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -25,11 +17,15 @@ use craft\base\Field;
 use craft\base\PreviewableFieldInterface;
 use craft\helpers\Json;
 use craft\i18n\Locale;
-
-use yii\base\InvalidConfigException;
-
-use PhpUnitsOfMeasure\AbstractPhysicalQuantity;
+use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
+use nystudio107\units\gql\types\generators\UnitsDataGenerator;
+use nystudio107\units\helpers\ClassHelper;
+use nystudio107\units\models\Settings;
+use nystudio107\units\models\UnitsData;
+use nystudio107\units\Units as UnitsPlugin;
+use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
+use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
@@ -38,8 +34,47 @@ use PhpUnitsOfMeasure\PhysicalQuantity\Length;
  */
 class Units extends Field implements PreviewableFieldInterface
 {
-    // Static Methods
+    // Public Properties
     // =========================================================================
+    /**
+     * @var ?string The default fully qualified class name of the unit of measure
+     */
+    public $defaultUnitsClass = null;
+
+    /**
+     * @var ?float The default value of the unit of measure
+     */
+    public $defaultValue = null;
+
+    /**
+     * @var ?string The default units that the unit of measure is in
+     */
+    public $defaultUnits = null;
+
+    /**
+     * @var ?bool Whether the units the field can be changed
+     */
+    public $changeableUnits = null;
+
+    /**
+     * @var int|float|null The minimum allowed number
+     */
+    public $min = null;
+
+    /**
+     * @var int|float|null The maximum allowed number
+     */
+    public $max = null;
+
+    /**
+     * @var ?int The number of digits allowed after the decimal point
+     */
+    public $decimals = null;
+
+    /**
+     * @var ?int The size of the field
+     */
+    public $size = null;
 
     /**
      * @inheritdoc
@@ -48,49 +83,6 @@ class Units extends Field implements PreviewableFieldInterface
     {
         return Craft::t('units', 'Units');
     }
-
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @var string The default fully qualified class name of the unit of measure
-     */
-    public $defaultUnitsClass;
-
-    /**
-     * @var float The default value of the unit of measure
-     */
-    public $defaultValue;
-
-    /**
-     * @var string The default units that the unit of measure is in
-     */
-    public $defaultUnits;
-
-    /**
-     * @var bool Whether the units the field can be changed
-     */
-    public $changeableUnits;
-
-    /**
-     * @var int|float The minimum allowed number
-     */
-    public $min;
-
-    /**
-     * @var int|float|null The maximum allowed number
-     */
-    public $max;
-
-    /**
-     * @var int The number of digits allowed after the decimal point
-     */
-    public $decimals;
-
-    /**
-     * @var int|null The size of the field
-     */
-    public $size;
 
     // Public Methods
     // =========================================================================
@@ -101,10 +93,10 @@ class Units extends Field implements PreviewableFieldInterface
     public function init()
     {
         parent::init();
-        /** @var Settings $settings */
         if (UnitsPlugin::$plugin !== null) {
+            /** @var ?Settings $settings */
             $settings = UnitsPlugin::$plugin->getSettings();
-            if (!empty($settings)) {
+            if ($settings !== null) {
                 $this->defaultUnitsClass = $this->defaultUnitsClass ?? $settings->defaultUnitsClass;
                 $this->defaultValue = $this->defaultValue ?? $settings->defaultValue;
                 $this->defaultUnits = $this->defaultUnits ?? $settings->defaultUnits;
@@ -162,12 +154,12 @@ class Units extends Field implements PreviewableFieldInterface
         // Handle incoming values potentially being JSON or an array
         if (!empty($value)) {
             // Handle a numeric value coming in (perhaps from a Number field)
-            if (\is_numeric($value)) {
+            if (is_numeric($value)) {
                 $config['value'] = (float)$value;
-            } elseif (\is_string($value)) {
+            } elseif (is_string($value)) {
                 $config = Json::decodeIfJson($value);
             }
-            if (\is_array($value)) {
+            if (is_array($value)) {
                 $config = array_merge($config, array_filter($value));
             }
         }
@@ -178,7 +170,7 @@ class Units extends Field implements PreviewableFieldInterface
         if (!$unitsData->validate()) {
             Craft::error(
                 Craft::t('units', 'UnitsData failed validation: ')
-                .print_r($unitsData->getErrors(), true),
+                . print_r($unitsData->getErrors(), true),
                 __METHOD__
             );
         }
@@ -235,7 +227,7 @@ class Units extends Field implements PreviewableFieldInterface
                 'prefix' => Craft::$app->getView()->namespaceInputId(''),
             ];
             $jsonVars = Json::encode($jsonVars);
-            Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(".$jsonVars.");");
+            Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').UnitsUnits(" . $jsonVars . ");");
 
             // Render the input template
             return Craft::$app->getView()->renderTemplate(
@@ -247,12 +239,25 @@ class Units extends Field implements PreviewableFieldInterface
                     'namespacedId' => $namespacedId,
                     'value' => $value,
                     'model' => $model,
-                    'field' => $this,
                 ]
             );
         }
 
         return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContentGqlType()
+    {
+        $typeArray = UnitsDataGenerator::generateTypes($this);
+
+        return [
+            'name' => $this->handle,
+            'description' => 'Units field',
+            'type' => array_shift($typeArray),
+        ];
     }
 
     /**
