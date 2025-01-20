@@ -1,12 +1,12 @@
 <?php
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * A plugin for handling physical quantities and the units of measure in which
  * they're represented.
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  */
 
 namespace nystudio107\units\models;
@@ -38,19 +38,19 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     // =========================================================================
 
     /**
-     * @var string The fully qualified class name of the unit of measure
+     * @var ?string The fully qualified class name of the unit of measure
      */
-    public string $unitsClass;
+    public ?string $unitsClass = null;
 
     /**
-     * @var float The value of the unit of measure
+     * @var ?float The value of the unit of measure
      */
-    public float $value;
+    public ?float $value = null;
 
     /**
-     * @var string The units that the unit of measure is in
+     * @var ?string The units that the unit of measure is in
      */
-    public string $units;
+    public ?string $units = null;
 
     /**
      * @var AbstractPhysicalQuantity
@@ -187,7 +187,6 @@ class UnitsData extends Model implements PhysicalQuantityInterface
     public function availableUnits(bool $includeAliases = true)
     {
         $availableUnits = [];
-        /** @var AbstractPhysicalQuantity $unitsClass */
         $units = $this->unitsInstance::getUnitDefinitions();
         /** @var UnitOfMeasure $unit */
         foreach ($units as $unit) {

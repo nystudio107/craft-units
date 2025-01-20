@@ -2,7 +2,7 @@
   "name": "nystudio107/craft-units",
   "description": "Units is a plugin that can convert between any units of measure, and comes with a Field for content authors to use",
   "type": "craft-plugin",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "keywords": [
     "craft",
     "cms",
@@ -16,7 +16,7 @@
   "support": {
     "docs": "https://nystudio107.com/docs/units/",
     "issues": "https://nystudio107.com/plugins/units/support",
-    "source": "https://github.com/nystudio107/craft-typogrify"
+    "source": "https://github.com/nystudio107/craft-units"
   },
   "license": "MIT",
   "authors": [
@@ -29,12 +29,26 @@
     "craftcms/cms": "^4.0.0",
     "php-units-of-measure/php-units-of-measure": "^2.1.0"
   },
+  "require-dev": {
+    "craftcms/ecs": "dev-main",
+    "craftcms/phpstan": "dev-main",
+    "craftcms/rector": "dev-main"
+  },
+  "scripts": {
+    "phpstan": "phpstan --ansi --memory-limit=1G",
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --fix --ansi"
+  },
   "config": {
     "allow-plugins": {
       "craftcms/plugin-installer": true,
       "yiisoft/yii2-composer": true
     },
     "optimize-autoloader": true,
+    "platform": {
+      "php": "8.0.2"
+    },
+    "platform-check": false,
     "sort-packages": true
   },
   "autoload": {

@@ -1,11 +1,11 @@
 <?php
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * A plugin for handling physical quantities and the units of measure in which they're represented.
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  */
 
 namespace nystudio107\units\models;
@@ -86,7 +86,7 @@ class Settings extends Model
                 ['defaultMax'],
                 'compare',
                 'compareAttribute' => 'defaultMin',
-                'operator' => '>='
+                'operator' => '>=',
             ],
             ['defaultMin', 'default', 'value' => 0],
             ['defaultMax', 'default', 'value' => null],

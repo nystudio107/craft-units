@@ -1,12 +1,12 @@
 <?php
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * A plugin for handling physical quantities and the units of measure in which
  * they're represented.
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  */
 
 namespace nystudio107\units\validators;
@@ -39,18 +39,18 @@ class EmbeddedUnitsDataValidator extends Validator
      */
     public $integerOnly = false;
     /**
-     * @var int|float upper limit of the number. Defaults to null, meaning no
+     * @var int|float|null upper limit of the number. Defaults to null, meaning no
      *      upper limit.
      * @see tooBig for the customized message used when the number is too big.
      */
-    public $max;
+    public $max = null;
     /**
-     * @var int|float lower limit of the number. Defaults to null, meaning no
+     * @var int|float|null lower limit of the number. Defaults to null, meaning no
      *      lower limit.
      * @see tooSmall for the customized message used when the number is too
      *      small.
      */
-    public $min;
+    public $min = null;
 
     // Public Methods
     // =========================================================================
@@ -104,7 +104,7 @@ class EmbeddedUnitsDataValidator extends Validator
     {
         $config = [
             'unitsClass' => $unitsData->unitsClass,
-            'units' => $this->units
+            'units' => $this->units,
         ];
         // Normalize the min
         if (!empty($this->min)) {

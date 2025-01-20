@@ -1,12 +1,12 @@
 <?php
 /**
- * Units plugin for Craft CMS 3.x
+ * Units plugin for Craft CMS
  *
  * A plugin for handling physical quantities and the units of measure in which
  * they're represented.
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) nystudio107
  */
 
 namespace nystudio107\units\fields;
@@ -18,7 +18,9 @@ use craft\base\PreviewableFieldInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\i18n\Locale;
+use GraphQL\Type\Definition\Type;
 use nystudio107\units\assetbundles\unitsfield\UnitsFieldAsset;
+use nystudio107\units\gql\types\generators\UnitsDataGenerator;
 use nystudio107\units\helpers\ClassHelper;
 use nystudio107\units\models\Settings;
 use nystudio107\units\models\UnitsData;
@@ -26,9 +28,6 @@ use nystudio107\units\Units as UnitsPlugin;
 use nystudio107\units\validators\EmbeddedUnitsDataValidator;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 use yii\base\InvalidConfigException;
-use function is_array;
-use function is_numeric;
-use function is_string;
 
 /**
  * @author    nystudio107
@@ -48,33 +47,33 @@ class Units extends Field implements PreviewableFieldInterface
     // Public Properties
     // =========================================================================
     /**
-     * @var float The default value of the unit of measure
+     * @var ?float The default value of the unit of measure
      */
-    public float $defaultValue;
+    public ?float $defaultValue = null;
     /**
-     * @var string The default units that the unit of measure is in
+     * @var ?string The default units that the unit of measure is in
      */
-    public string $defaultUnits;
+    public ?string $defaultUnits = null;
     /**
-     * @var bool Whether the units the field can be changed
+     * @var ?bool Whether the units the field can be changed
      */
-    public bool $changeableUnits;
+    public ?bool $changeableUnits = null;
     /**
-     * @var int|float The minimum allowed number
+     * @var int|float|null The minimum allowed number
      */
-    public int|float $min;
+    public int|float|null $min = null;
     /**
      * @var int|float|null The maximum allowed number
      */
-    public int|null|float $max;
+    public int|float|null $max = null;
     /**
-     * @var int The number of digits allowed after the decimal point
+     * @var ?int The number of digits allowed after the decimal point
      */
-    public int $decimals;
+    public ?int $decimals = null;
     /**
-     * @var int|null The size of the field
+     * @var ?int The size of the field
      */
-    public ?int $size;
+    public ?int $size = null;
 
     /**
      * @inheritdoc
@@ -93,10 +92,10 @@ class Units extends Field implements PreviewableFieldInterface
     public function init(): void
     {
         parent::init();
-        /** @var Settings $settings */
         if (UnitsPlugin::$plugin !== null) {
+            /** @var Settings $settings */
             $settings = UnitsPlugin::$plugin->getSettings();
-            if (!empty($settings)) {
+            if ($settings !== null) {
                 $this->defaultUnitsClass = $this->defaultUnitsClass ?? $settings->defaultUnitsClass;
                 $this->defaultValue = $this->defaultValue ?? $settings->defaultValue;
                 $this->defaultUnits = $this->defaultUnits ?? $settings->defaultUnits;
@@ -244,6 +243,20 @@ class Units extends Field implements PreviewableFieldInterface
         }
 
         return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContentGqlType(): Type|array
+    {
+        $typeArray = UnitsDataGenerator::generateTypes($this);
+
+        return [
+            'name' => $this->handle,
+            'description' => 'Units field',
+            'type' => array_shift($typeArray),
+        ];
     }
 
     /**
