@@ -1,5 +1,9 @@
 # Units Changelog
 
+## 4.0.3 - 2025.06.13
+### Fixed
+* Pinned the `php-units-of-measure` to version `~2.1.0` to avoid breaking changes in non-major releases
+
 ## 4.0.2 - 2025.01.19
 ### Added
 * Add `ecs` and `phpstan` code quality tools
